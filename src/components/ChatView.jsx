@@ -87,6 +87,7 @@ export default function ChatView({
   clearNavIntent,
   addActivityEvent,
   demoStep,
+  onDemoStepAdvance,
 }) {
   const activeContact = contacts.find((c) => c.id === activeChatId)
   const baseMessages = messagesByContact[activeChatId] || []
@@ -322,6 +323,8 @@ export default function ChatView({
       }))
       // Clear processing state
       setProcessingAuthKey(null)
+      // Advance demo step if on step 5
+      if (onDemoStepAdvance) onDemoStepAdvance()
     }, 2500)
   }
 
@@ -714,6 +717,7 @@ export default function ChatView({
   const showPromptSuggestions = !!agentSuggestions && messages.length === 0 && mainTypingAgentId !== activeChatId
 
   const showChatArrow = (demoStep === 0) || (demoStep === 1) || (demoStep === 4)
+  const showSignInArrow = demoStep === 5
   const arrowTarget = demoStep === 1 ? 'chat-34' : 'chat-35'
 
   return (
@@ -721,6 +725,12 @@ export default function ChatView({
       {showChatArrow && (
         <div className={`chat-demo-arrow chat-demo-arrow-${arrowTarget}`}>
           <DemoArrow direction="left" size={24} />
+        </div>
+      )}
+      {showSignInArrow && (
+        <div className="chat-demo-arrow chat-demo-arrow-signin">
+          <DemoArrow direction="left" size={24} />
+          <span className="chat-demo-tooltip">Click for SSO (silent auth).</span>
         </div>
       )}
       <div className="chat-view-main">

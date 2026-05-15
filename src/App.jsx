@@ -17,7 +17,7 @@ export default function App() {
   // Activity feed: persist which events the user has opened so unread decorations clear.
   const [activityEvents, setActivityEvents] = useState(seedActivityEvents)
   const [activeActivityId, setActiveActivityId] = useState(null)
-  // Demo walkthrough: 0 = chat 35, 1 = chat 34, 2 = activity bell, 3 = chats, 4 = chat 35 again
+  // Demo walkthrough: 0 = chat 35, 1 = chat 34, 2 = activity bell, 3 = chats, 4 = chat 35 again, 5 = sign in button
   const [demoStep, setDemoStep] = useState(0)
   // When navigating to a chat, optionally tell ChatView to open a specific
   // session (sessions rail), open a specific channel thread, or flash a
@@ -43,7 +43,7 @@ export default function App() {
     // Advance demo step when correct chat is clicked
     if (demoStep === 0 && chatId === 35) setDemoStep(1)
     else if (demoStep === 1 && chatId === 34) setDemoStep(2)
-    else if (demoStep === 4 && chatId === 35) setDemoStep(null) // Demo complete
+    else if (demoStep === 4 && chatId === 35) setDemoStep(5) // Show sign-in arrow
   }, [demoStep])
 
   const navigateToChat = useCallback((chatId, { showSessions, sessionId } = {}) => {
@@ -79,6 +79,10 @@ export default function App() {
   const addActivityEvent = useCallback((event) => {
     setActivityEvents(prev => [event, ...prev])
   }, [])
+
+  const advanceDemoStep = useCallback(() => {
+    if (demoStep === 5) setDemoStep(null) // Demo complete after sign-in
+  }, [demoStep])
 
   const selectActivity = useCallback((event) => {
     setActiveActivityId(event.id)
@@ -132,6 +136,7 @@ export default function App() {
           clearNavIntent={clearNavIntent}
           addActivityEvent={addActivityEvent}
           demoStep={demoStep}
+          onDemoStepAdvance={advanceDemoStep}
         />
       </div>
       {showFre && (

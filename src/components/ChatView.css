@@ -23,6 +23,25 @@
   top: 318px;
 }
 
+.chat-demo-arrow-signin {
+  left: 50%;
+  margin-left: 240px;
+  top: 480px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-demo-tooltip {
+  background: #323130;
+  color: #FFFFFF;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
 .chat-view-main {
   flex: 1;
   display: flex;
