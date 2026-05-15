@@ -1,0 +1,39 @@
+.avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  position: relative;
+  overflow: visible;
+}
+
+.avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-inset {
+  border: 1px solid #E0E0E0;
+  box-sizing: border-box;
+}
+
+.avatar-img-inset {
+  object-fit: contain;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  border-radius: 50%;
+  border: 2.5px solid var(--avatar-status-ring, #FFFFFF);
+  box-sizing: content-box;
+}
+
+.status-available { background: #92C353; }
+.status-busy      { background: #C4314B; }
+.status-away      { background: #FFC300; }
+.status-offline   { background: #B4B4B4; }

@@ -1,0 +1,215 @@
+.fre-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 30, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fre-overlay-fade 160ms ease-out;
+}
+
+@keyframes fre-overlay-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fre-modal {
+  background: #FFFFFF;
+  border-radius: 14px;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.06);
+  width: 620px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 244px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  animation: fre-modal-pop 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes fre-modal-pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header — title + subtitle. Soft radial gradient mesh in Teams-purple
+   tints adds visual warmth without taking up vertical space. */
+.fre-modal-header {
+  padding: 32px 32px 22px;
+  flex-shrink: 0;
+  text-align: left;
+  border-bottom: 1px solid #E8E8E8;
+  background:
+    radial-gradient(ellipse 65% 110% at 18% -10%, rgba(91, 95, 199, 0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 90% at 88% 40%, rgba(123, 127, 224, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 80% at 50% 115%, rgba(148, 153, 234, 0.10) 0%, transparent 65%);
+}
+
+/* Small Teams-purple accent bar sitting above the title — visual cue
+   that the dialog is about a feature/intro. */
+.fre-modal-title-accent {
+  width: 32px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #5B5FC7 0%, #9499EA 100%);
+  margin-bottom: 12px;
+}
+
+.fre-modal-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #242424;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.fre-modal-subtitle {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #616161;
+  line-height: 1.5;
+}
+
+.fre-modal-body {
+  padding: 24px 32px 8px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #242424;
+}
+
+.fre-modal-body > *:first-child { margin-top: 0; }
+.fre-modal-body > *:last-child { margin-bottom: 0; }
+
+.fre-modal-body p {
+  margin: 0 0 14px;
+}
+
+.fre-section-title {
+  display: inline-block;
+  margin: 18px 0 10px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5B5FC7;
+  background: rgba(91, 95, 199, 0.12);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+}
+
+.fre-section-title:first-child {
+  margin-top: 0;
+}
+
+.fre-modal-body code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  background: #F3F2F8;
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #424242;
+}
+
+/* Helper classes for caller-supplied feature lists inside the body. */
+.fre-feature-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fre-feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.fre-feature-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(91, 95, 199, 0.12);
+  color: #5B5FC7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.fre-feature-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.fre-feature-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #242424;
+  margin-bottom: 2px;
+}
+
+.fre-feature-desc {
+  font-size: 13px;
+  color: #616161;
+  line-height: 1.5;
+}
+
+.fre-modal-footnote {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid #EEEEEE;
+  font-size: 12.5px;
+  color: #757575;
+  line-height: 1.5;
+}
+
+.fre-modal-footer {
+  padding: 16px 32px 24px;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  border-top: 1px solid #E8E8E8;
+}
+
+.fre-modal-dismiss {
+  background: #5B5FC7;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 100px;
+  box-shadow: 0 2px 4px rgba(91, 95, 199, 0.22);
+  transition: background 120ms ease, box-shadow 120ms ease, transform 80ms ease;
+}
+
+.fre-modal-dismiss:hover {
+  background: #4F52B2;
+  box-shadow: 0 6px 14px rgba(91, 95, 199, 0.32);
+}
+
+.fre-modal-dismiss:active {
+  background: #4A4D9C;
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(91, 95, 199, 0.2);
+}
+
+.fre-modal-dismiss:focus-visible {
+  outline: 2px solid #5B5FC7;
+  outline-offset: 2px;
+}

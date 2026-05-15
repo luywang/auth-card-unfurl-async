@@ -1,0 +1,232 @@
+/* Right-pane thread view for a channel post. Mirrors the look of AgentsRail
+   (width, header bar, divider treatment) so multiple rails feel consistent,
+   but shows a root MessageRow + its replies instead of an agent chat. */
+
+.channel-thread-rail {
+  width: 420px;
+  min-width: 420px;
+  border-left: 1px solid #E8E8E8;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.channel-thread-rail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 16px;
+  height: 56px;
+  border-bottom: 1px solid #E8E8E8;
+  flex-shrink: 0;
+}
+
+/* Title group holds the optional back button + the title itself with a tight
+   internal gap so they read as one unit; the larger header gap separates the
+   group from the right-side action buttons. */
+.channel-thread-rail-title-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.channel-thread-rail-back {
+  margin-left: -4px;
+}
+
+.channel-thread-rail-title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #242424;
+}
+
+.channel-thread-rail-title-subject {
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.channel-thread-rail-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.channel-thread-rail-action {
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #616161;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel-thread-rail-action:hover {
+  background: #F0F0F0;
+  color: #242424;
+}
+
+.channel-thread-rail-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.channel-thread-rail-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reuse the messages-container spacing rhythm from the main canvas so rows
+   render identically. `.messages-container`'s max-width/padding is meant for
+   the full canvas; we override padding to fit the narrower rail. */
+/* MessageRow applies margin-left: -40px / margin-right: -40px to reach the
+   canvas's visual edge. Pad by 51px on both sides so rows have ~10px more
+   horizontal room than before; effective spacing after the negative margins
+   is 11px — avatars and mine-bubbles still breathe on both sides. */
+.channel-thread-rail-messages {
+  padding: 12px 51px 16px 51px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Empty state for the threads list — shown when no posts/threads exist in
+   the current chat scope. Center-aligned title + subtitle. */
+.channel-thread-rail-body-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel-thread-rail-empty {
+  text-align: center;
+  padding: 0 32px;
+  max-width: 320px;
+}
+
+.channel-thread-rail-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #242424;
+  margin-bottom: 6px;
+}
+
+.channel-thread-rail-empty-subtitle {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #616161;
+}
+
+.channel-thread-rail-empty-subtitle em {
+  font-style: italic;
+}
+
+/* List view — shown when no thread is selected. One row per channel post:
+   subject (or first line) + a meta line with timestamp and reply count.
+   Click a row to open that thread's detail view. */
+.channel-thread-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-thread-rail-list-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: inherit;
+  color: #242424;
+}
+
+.channel-thread-rail-list-item:hover {
+  background: #F5F5F5;
+}
+
+.channel-thread-rail-list-subject {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.channel-thread-rail-list-meta {
+  font-size: 12px;
+  color: #616161;
+}
+
+.channel-thread-rail-compose {
+  padding: 8px 16px 16px;
+  background: #FFFFFF;
+  flex-shrink: 0;
+  border-top: 1px solid #E8E8E8;
+}
+
+.channel-thread-rail-compose-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d1d1;
+  border-radius: 20px;
+  background: #fff;
+  padding: 6px 8px 6px 16px;
+  gap: 4px;
+}
+
+.channel-thread-rail-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: #242424;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+.channel-thread-rail-input::placeholder {
+  color: #999;
+}
+
+.channel-thread-rail-send {
+  background: none;
+  border: none;
+  padding: 5px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel-thread-rail-send:hover {
+  background: #f0f0f0;
+  color: #6264A7;
+}

@@ -1,0 +1,82 @@
+/* Chain-of-Thought — collapsible trace at the bottom of an agent message.
+   Box has a thin outline and a transparent background so it inherits the
+   bubble color (works on both #F5F5F5 others' bubbles and #E8EBFA mine). */
+
+.chain-of-thought {
+  margin-top: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  background: transparent;
+  overflow: hidden;
+  width: 100%;
+}
+
+.cot-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: #424242;
+  text-align: left;
+}
+
+.cot-toggle:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.cot-label {
+  flex: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cot-toggle > svg {
+  flex-shrink: 0;
+  color: #707070;
+}
+
+.cot-toggle > svg:last-child {
+  transition: transform 150ms ease;
+}
+
+.chain-of-thought-expanded .cot-toggle > svg:last-child {
+  transform: rotate(90deg);
+}
+
+.cot-steps {
+  list-style: none;
+  margin: 0;
+  padding: 4px 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cot-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: #424242;
+  line-height: 1.45;
+}
+
+.cot-step > svg {
+  flex-shrink: 0;
+  color: #707070;
+  margin-top: 2px;
+}
+
+.cot-step-text {
+  flex: 1;
+  min-width: 0;
+}

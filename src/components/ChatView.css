@@ -1,0 +1,724 @@
+.chat-view {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  min-width: 0;
+}
+
+.chat-view-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Header styles live in ChatHeader.css. Compose styles live in Compose.css. */
+
+/* ── Messages ── */
+/* Horizontal padding here ensures the message-row avatar (which extends
+   16px past the messages-container outer edge via `margin-left: -40px`)
+   stays clear of the canvas edge as the viewport narrows or rails take
+   space — gives a 16px buffer between avatar and canvas edge. The same
+   padding amount is mirrored on `.chat-compose-area` (with its max-width
+   bumped by 2× the padding) so bubble and compose stay aligned. */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  background: #FFFFFF;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 32px;
+}
+
+.chat-messages::-webkit-scrollbar {
+  display: none;
+}
+
+.messages-container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Bubble edges align to the compose field in both chats and channels:
+   - others' bubble left = compose left; avatar (-40px) extends past it
+   - mine bubble right  = compose right; my avatar (group chats) extends past it
+   - mine 1:1 has no avatar, so the row sits flush with the compose right edge */
+.message-row {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  align-items: flex-start;
+  margin-left: -40px;
+}
+
+.message-row.message-mine {
+  justify-content: flex-end;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.message-row.message-mine:has(.message-avatar-col) {
+  margin-right: -40px;
+}
+
+.message-avatar-col {
+  flex-shrink: 0;
+  width: 32px;
+  padding-top: 18px;
+}
+
+.message-content-wrap {
+  max-width: 65%;
+  min-width: 0;
+}
+
+/* Channel posts are typically longer (announcement-style) — give them a
+   slightly wider bubble than regular chat bubbles so body copy doesn't
+   wrap as aggressively. */
+.messages-container-channel .message-content-wrap {
+  max-width: 80%;
+}
+
+.message-mine .message-content-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.message-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.message-mine .message-meta {
+  flex-direction: row-reverse;
+}
+
+.message-sender-name {
+  font-size: 13px;
+  font-weight: 400;
+  color: #242424;
+}
+
+.message-timestamp {
+  font-size: 12px;
+  color: #999;
+}
+
+.message-bubble {
+  position: relative;
+  font-size: 14px;
+  line-height: 20px;
+  color: #242424;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #F5F5F5;
+}
+
+.message-mine .message-bubble {
+  background: #E8EBFA;
+}
+
+.mention {
+  color: #6264A7;
+  font-weight: 700;
+}
+
+/* Channel post subject — rendered inside the bubble, above the body. */
+.message-subject {
+  font-size: 15px;
+  font-weight: 600;
+  color: #242424;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+/* ── Forwarded message quote ── */
+.forwarded-message {
+  border-left: 3px solid #6264A7;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  background: rgba(98, 100, 167, 0.06);
+  border-radius: 0 4px 4px 0;
+}
+
+.forwarded-sender {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6264A7;
+  line-height: 16px;
+}
+
+.forwarded-text {
+  font-size: 12px;
+  color: #616161;
+  line-height: 16px;
+  word-wrap: break-word;
+}
+
+/* ── Private (only-you) thread anchor ── */
+.message-bubble-private {
+  border: 1px solid #BDBDBD;
+}
+
+/* PrivateDisclaimer base styles live in components/common/PrivateDisclaimer.css;
+   inside message bubbles we add a little breathing room below. */
+.message-bubble .private-disclaimer {
+  margin-bottom: 4px;
+}
+
+/* ── Typing indicator (floats above compose) ──
+   Matches Compose's centering (max-width: 920px, margin: 0 auto) so an
+   absolutely-positioned typing indicator anchors to the same column as
+   the compose box — not the full-width chat-view. Compose is promoted
+   to a higher stacking layer so its white fill visually clips the
+   bottom ~10% of the typing avatar. */
+.chat-compose-area {
+  position: relative;
+  max-width: 984px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.chat-compose-area .chat-compose {
+  position: relative;
+  z-index: 2;
+}
+
+.chat-compose-typing {
+  position: absolute;
+  left: 40px;
+  top: -21px;
+  z-index: 1;
+}
+
+/* ── Reaction pills (under bubble) ──
+   Parent alignment from .message-content-wrap handles left/right: the flex
+   column on `.message-mine` right-aligns children; for others' messages the
+   content-wrap is block so the bar left-aligns with the bubble. */
+.message-reactions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: -6px;
+  margin-left: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.message-mine .message-reactions-bar {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+.reaction-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 5px;
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1;
+  color: #424242;
+  height: 24px;
+}
+
+.reaction-pill:hover {
+  background: #F5F5F5;
+}
+
+.reaction-pill-mine {
+  border-color: #6264A7;
+}
+
+.reaction-pill-mine:hover {
+  background: rgba(98, 100, 167, 0.08);
+}
+
+.reaction-pill-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #424242;
+}
+
+.reaction-pill-mine .reaction-pill-count {
+  color: #6264A7;
+}
+
+/* ── Thread reply indicator (under anchor bubble) ── */
+.message-thread-replies {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 4px 8px 4px 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #6264A7;
+}
+
+.message-thread-replies:hover {
+  background: #F0F0F0;
+}
+
+.message-thread-replies-avatars {
+  display: inline-flex;
+  align-items: center;
+}
+
+.message-thread-replies-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1.5px #fff;
+}
+
+.message-thread-replies-avatar + .message-thread-replies-avatar {
+  margin-left: -6px;
+}
+
+.message-thread-replies-avatar img {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.message-thread-replies-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* ── Adaptive Cards (inside message bubbles) ──
+   Teams renders agent-sent rich content via the Adaptive Cards framework
+   (https://adaptivecards.microsoft.com/). The shape here is a minimal
+   fixture — real adaptive cards support richer elements; add them as the
+   prototype needs them. See DESIGN_GUIDE.md. */
+.message-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* Teams-style file artifact card — Word/Excel/PowerPoint shares. Compact
+   horizontal layout that mirrors `.link-card` so shared files and shared
+   links read as the same family of attachment. */
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  background: #FFFFFF;
+  cursor: pointer;
+  max-width: 320px;
+}
+
+.file-card:hover {
+  background: #FAFAFA;
+  border-color: #D1D1D1;
+}
+
+.file-card-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.file-card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #242424;
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-card-subtitle {
+  font-size: 11px;
+  color: #616161;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adaptive-card {
+  border: 1px solid #E0E0E0;
+  border-left: 3px solid #616161;
+  border-radius: 4px;
+  background: #fff;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Header row — optional icon tile + title/subtitle/badge. Resembles an
+   Adaptive Cards `ColumnSet` with a fixed-width icon column. */
+.card-header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.card-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.card-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #242424;
+  line-height: 18px;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: #616161;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* Status badge — small pill chip; `tone` controls the color treatment. */
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.card-badge-amber   { background: rgba(202, 80, 16, 0.12);  color: #B14E0F; }
+.card-badge-green   { background: rgba(16, 124, 16, 0.12);  color: #107C10; }
+.card-badge-purple  { background: rgba(91, 95, 199, 0.14);  color: #5B5FC7; }
+.card-badge-neutral { background: #F0F0F0;                  color: #616161; }
+
+/* Plan steps — numbered list with status pips (pending/running/done). */
+.card-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  color: #424242;
+  line-height: 1.45;
+}
+
+.card-step-marker {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 1px;
+  box-sizing: border-box;
+}
+
+.card-step-pending .card-step-marker {
+  background: #F5F5F5;
+  color: #616161;
+}
+
+.card-step-running .card-step-marker {
+  background: rgba(91, 95, 199, 0.14);
+  color: #5B5FC7;
+  outline: 1.5px solid #5B5FC7;
+  outline-offset: -1.5px;
+}
+
+.card-step-done .card-step-marker {
+  background: #107C10;
+  color: #fff;
+}
+
+.card-step-done .card-step-text {
+  color: #757575;
+}
+
+/* Sections — grouped content with optional uppercase heading. */
+.card-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-section-heading {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5B5FC7;
+  margin-bottom: 4px;
+}
+
+.card-section-text {
+  font-size: 12px;
+  color: #424242;
+  line-height: 1.5;
+}
+
+.card-bullets {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-bullets li {
+  position: relative;
+  padding-left: 12px;
+  font-size: 12px;
+  color: #424242;
+  line-height: 1.45;
+}
+
+.card-bullets li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #BDBDBD;
+}
+
+/* Facts — inline label/value pairs (still a `FactSet` analog). */
+.card-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.card-fact {
+  font-size: 12px;
+  color: #616161;
+}
+
+.card-fact-label {
+  font-weight: 600;
+  color: #616161;
+}
+
+/* KPI tiles — auto-fit grid of value + label + optional delta. */
+.card-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.card-metric {
+  background: #FAFAFA;
+  border: 1px solid #EFEFEF;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.card-metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #242424;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-metric-label {
+  font-size: 11px;
+  color: #616161;
+  margin-top: 2px;
+}
+
+.card-metric-delta {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-metric-delta-positive { color: #107C10; }
+.card-metric-delta-negative { color: #C4314B; }
+.card-metric-delta-neutral  { color: #616161; }
+
+/* Horizontal bar chart — label / track / value, auto-scaled to the largest
+   value. Track is neutral; fill uses the Teams-purple gradient by default. */
+.card-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 56px;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.card-bar-label {
+  color: #424242;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-bar-track {
+  height: 8px;
+  background: #F0F0F0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.card-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5B5FC7, #7B7FE0);
+  border-radius: 4px;
+  min-width: 4px;
+}
+
+.card-bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: #242424;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Footer — subtle metadata strip (e.g. "Generated by Cowork · 4:31 PM"). */
+.card-footer {
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px solid #F0F0F0;
+  font-size: 11px;
+  color: #9E9E9E;
+}
+
+/* Actions — link-style buttons. */
+.card-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.card-action-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6264A7;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.card-action-btn:hover {
+  text-decoration: underline;
+}
+
+/* ── Activity-navigation highlight ──
+   When the user clicks an Activity event, ChatView scrolls the triggering
+   message into view and briefly flashes a tinted background behind the row
+   so the destination is obvious. */
+.message-row.message-row-highlight {
+  animation: message-row-highlight-pulse 1.8s ease-out;
+  border-radius: 6px;
+}
+
+@keyframes message-row-highlight-pulse {
+  0%, 20% {
+    background: rgba(91, 95, 199, 0.14);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* ── Session source banner ── */
+.session-source-banner {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  padding: 8px 0 12px;
+}
+
+.session-source-banner-link {
+  color: #6264A7;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.session-source-banner-link:hover {
+  text-decoration: underline;
+}
