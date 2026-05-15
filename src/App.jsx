@@ -27,6 +27,8 @@ export default function App() {
   // hides it for the current session. Swap to localStorage gating later if a
   // real first-run-only behavior is needed.
   const [showFre, setShowFre] = useState(true)
+  // Auth flow option: 'option1' (private message) or 'option2' (public message, not yet implemented)
+  const [authOption, setAuthOption] = useState('option1')
 
   const dismissFre = useCallback(() => setShowFre(false), [])
 
@@ -145,6 +147,21 @@ export default function App() {
           subtitle="Rich preview cards for authenticated content — even when you send too quickly."
           onDismiss={dismissFre}
         >
+          <div className="fre-option-selector">
+            <label htmlFor="auth-option" className="fre-option-label">
+              Select prototype option:
+            </label>
+            <select
+              id="auth-option"
+              className="fre-option-dropdown"
+              value={authOption}
+              onChange={(e) => setAuthOption(e.target.value)}
+            >
+              <option value="option1">Option 1 - Private message auth</option>
+              <option value="option2">Option 2 - Public message auth (coming soon)</option>
+            </select>
+          </div>
+
           <h3 className="fre-section-title">Today</h3>
           <p>
             When you share a link to authenticated content (like a Power BI report or private document),
@@ -161,18 +178,23 @@ export default function App() {
             which feels backwards.
           </p>
 
-          <h3 className="fre-section-title">Solution</h3>
+          <h3 className="fre-section-title">Solution (Option 1 - Private Message Auth)</h3>
           <p>
-            This prototype introduces asynchronous link unfurling with post-send authentication. After
-            you send a link, Teams attempts authentication in the background. If auth is needed, you'll
-            receive a private message from the service (like Power BI) prompting you to sign in. Once
-            you complete authentication, the original message upgrades from a thumbnail to the full
+            This prototype introduces asynchronous link unfurling with post-send authentication using
+            <strong> private messages</strong>. After you send a link, Teams attempts authentication
+            in the background. If auth is needed, you'll receive a <strong>private message</strong> from
+            the service (like Power BI) prompting you to sign in. Only you can see this auth prompt.
+            Once you complete authentication, the original message upgrades from a thumbnail to the full
             rich preview card — for everyone in the conversation.
           </p>
           <p>
             The demo includes two scenarios: SSO (silent auth that completes automatically) and Fresh
             Auth (manual sign-in required). Watch for the yellow "Please wait" banner, the targeted
             auth card from Power BI, and the seamless upgrade to the rich preview.
+          </p>
+          <p className="fre-option-note">
+            <strong>Note:</strong> Option 2 (Public message auth) will show the auth prompt in the
+            conversation thread instead of a private message. This option is coming soon.
           </p>
 
           <h3 className="fre-section-title">What this Unlocks</h3>
