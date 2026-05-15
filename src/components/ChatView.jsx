@@ -284,6 +284,44 @@ export default function ChatView({
     }, 2500)
   }
 
+  // Trigger message sequence after rich card appears (chat 35 demo flow)
+  useEffect(() => {
+    const stateKey = `${activeChatId}-3`
+    const isRich = powerBIStates[stateKey] === 'rich'
+
+    if (activeChatId === 35 && isRich && !extraMessages[canvasKey]?.some(m => m.id === 4)) {
+      // Define the message sequence
+      const messageSequence = [
+        { id: 4, senderId: 1, text: 'Week 4 uptick looks solid. Is that organic or did we push a cohort through?', time: 'Today 9:05 AM' },
+        { id: 5, senderId: 7, text: 'Organic — most of it came from the SDK v2 preview release. Onboarding time dropped ~40%.', time: 'Today 9:07 AM' },
+        { id: 6, senderId: 'me', text: 'Exactly. The worked examples in the docs made a big difference.', time: 'Today 9:08 AM' },
+      ]
+
+      // Add messages one by one with typing indicators
+      messageSequence.forEach((msg, index) => {
+        const delay = index * 2500
+
+        // Show typing indicator (except for 'me')
+        if (msg.senderId !== 'me') {
+          setTimeout(() => {
+            setMainTypingAgentId(msg.senderId)
+          }, delay)
+        }
+
+        // Add message and hide typing indicator
+        setTimeout(() => {
+          setExtraMessages((prev) => ({
+            ...prev,
+            [canvasKey]: [...(prev[canvasKey] || []), msg]
+          }))
+          if (msg.senderId !== 'me') {
+            setMainTypingAgentId(null)
+          }
+        }, delay + 2500)
+      })
+    }
+  }, [activeChatId, powerBIStates, canvasKey, extraMessages])
+
   let messages = [...displayBaseMessages, ...(extraMessages[canvasKey] || [])]
 
   // Merge in Power BI unfurl states
@@ -726,9 +764,9 @@ export default function ChatView({
         </div>
 
         <div className="chat-compose-area">
-          {mainTypingAgentId === activeChatId && (
+          {mainTypingAgentId && (
             <TypingIndicator
-              contact={activeContact}
+              contact={mainTypingAgentId === activeChatId ? activeContact : contacts.find(c => c.id === mainTypingAgentId) || activeContact}
               className="chat-compose-typing"
             />
           )}

@@ -1082,9 +1082,7 @@ export const messagesByContact = {
         },
       },
     },
-    { id: 4, senderId: 1, text: 'Week 4 uptick looks solid. Is that organic or did we push a cohort through?', time: 'Today 9:05 AM' },
-    { id: 5, senderId: 7, text: 'Organic — most of it came from the SDK v2 preview release. Onboarding time dropped ~40%.', time: 'Today 9:07 AM' },
-    { id: 6, senderId: 'me', text: 'Exactly. The worked examples in the docs made a big difference.', time: 'Today 9:08 AM' },
+    // Messages 4, 5, 6 are added dynamically after rich card appears (see ChatView.jsx)
   ],
 
   // ── Power BI Bot - Targeted Messages ───────────────────────────────────
