@@ -265,6 +265,12 @@ export default function ChatView({
           reportName: msg.powerBILink.report?.title || 'Power BI Report',
         }
         setTargetedAuthMessages((prev) => [...prev, authMsg])
+
+        // Also add to chat 34 (Power BI bot chat) so it appears as a conversation there
+        setExtraMessages((prev) => ({
+          ...prev,
+          34: [...(prev[34] || []), authMsg]
+        }))
       }
     })
   }, [displayBaseMessages, extraMessages, canvasKey, activeChatId, powerBIStates])
@@ -279,6 +285,11 @@ export default function ChatView({
       setPowerBIStates((prev) => ({ ...prev, [messageKey]: 'rich' }))
       // Remove targeted message after processing
       setTargetedAuthMessages((prev) => prev.filter((m) => m.targetMessageKey !== messageKey))
+      // Also remove from chat 34 (Power BI bot chat)
+      setExtraMessages((prev) => ({
+        ...prev,
+        34: (prev[34] || []).filter((m) => m.targetMessageKey !== messageKey)
+      }))
       // Clear processing state
       setProcessingAuthKey(null)
     }, 2500)
