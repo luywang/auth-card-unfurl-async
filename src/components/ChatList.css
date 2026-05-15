@@ -222,6 +222,18 @@
   position: relative;
 }
 
+.chat-list-item-arrow {
+  position: absolute;
+  left: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #E81123;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
 .chat-list-item:hover,
 .chat-list-item.selected {
   background: #FCFBFA;

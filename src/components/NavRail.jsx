@@ -1,3 +1,4 @@
+import { DemoArrow } from './common'
 import './NavRail.css'
 
 // Clickable items are `activity` and `chat` — the rest are decorative for now.
@@ -78,7 +79,7 @@ const navItems = [
   },
 ]
 
-export default function NavRail({ activeView = 'chat', onSelectView, activityUnreadCount = 0 }) {
+export default function NavRail({ activeView = 'chat', onSelectView, activityUnreadCount = 0, demoStep }) {
   return (
     <nav className="nav-rail">
       <div className="nav-items">
@@ -89,11 +90,13 @@ export default function NavRail({ activeView = 'chat', onSelectView, activityUnr
             ? () => onSelectView?.(item.id)
             : undefined
           const badgeCount = item.id === 'activity' ? activityUnreadCount : item.badge || 0
+          const showArrow = (demoStep === 2 && item.id === 'activity') ||
+                           (demoStep === 3 && item.id === 'chat')
           return (
             <button
               key={item.id}
               type="button"
-              className={`nav-item${isActive ? ' active' : ''}`}
+              className={`nav-item${isActive ? ' active' : ''}${showArrow ? ' nav-item-with-arrow' : ''}`}
               onClick={handleClick}
               aria-label={item.label}
               aria-pressed={isActive}
@@ -104,6 +107,11 @@ export default function NavRail({ activeView = 'chat', onSelectView, activityUnr
                   <span className="nav-badge">{badgeCount > 99 ? '99+' : badgeCount}</span>
                 )}
               </div>
+              {showArrow && (
+                <span className="nav-item-arrow">
+                  <DemoArrow direction="left" size={20} />
+                </span>
+              )}
             </button>
           )
         })}

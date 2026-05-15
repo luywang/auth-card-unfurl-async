@@ -113,3 +113,14 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.nav-item-arrow {
+  position: absolute;
+  right: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #E81123;
+  display: flex;
+  align-items: center;
+}

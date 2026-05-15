@@ -4,6 +4,23 @@
   flex-direction: row;
   background: #fff;
   min-width: 0;
+  position: relative;
+}
+
+.chat-demo-arrow {
+  position: absolute;
+  left: 32px;
+  pointer-events: none;
+  color: #E81123;
+  z-index: 100;
+}
+
+.chat-demo-arrow-chat-35 {
+  top: 284px;
+}
+
+.chat-demo-arrow-chat-34 {
+  top: 318px;
 }
 
 .chat-view-main {

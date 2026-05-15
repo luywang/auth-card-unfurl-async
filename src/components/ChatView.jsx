@@ -13,7 +13,7 @@ import {
   pollyAgent,
   breakthuAgent,
 } from '../data'
-import { TypingIndicator } from './common'
+import { TypingIndicator, DemoArrow } from './common'
 import MessageRow from './MessageRow'
 import SessionsRail from './SessionsRail'
 import AgentsRail from './AgentsRail'
@@ -86,6 +86,7 @@ export default function ChatView({
   navIntent,
   clearNavIntent,
   addActivityEvent,
+  demoStep,
 }) {
   const activeContact = contacts.find((c) => c.id === activeChatId)
   const baseMessages = messagesByContact[activeChatId] || []
@@ -712,8 +713,16 @@ export default function ChatView({
   const agentSuggestions = isAgent ? promptSuggestions[activeChatId] : null
   const showPromptSuggestions = !!agentSuggestions && messages.length === 0 && mainTypingAgentId !== activeChatId
 
+  const showChatArrow = (demoStep === 0) || (demoStep === 1) || (demoStep === 4)
+  const arrowTarget = demoStep === 1 ? 'chat-34' : 'chat-35'
+
   return (
     <div className="chat-view">
+      {showChatArrow && (
+        <div className={`chat-demo-arrow chat-demo-arrow-${arrowTarget}`}>
+          <DemoArrow direction="left" size={24} />
+        </div>
+      )}
       <div className="chat-view-main">
         <ChatHeader
           activeContact={activeContact}

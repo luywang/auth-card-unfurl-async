@@ -17,6 +17,8 @@ export default function App() {
   // Activity feed: persist which events the user has opened so unread decorations clear.
   const [activityEvents, setActivityEvents] = useState(seedActivityEvents)
   const [activeActivityId, setActiveActivityId] = useState(null)
+  // Demo walkthrough: 0 = chat 35, 1 = chat 34, 2 = activity bell, 3 = chats, 4 = chat 35 again
+  const [demoStep, setDemoStep] = useState(0)
   // When navigating to a chat, optionally tell ChatView to open a specific
   // session (sessions rail), open a specific channel thread, or flash a
   // specific message so the user can see where a notification landed.
@@ -28,10 +30,21 @@ export default function App() {
 
   const dismissFre = useCallback(() => setShowFre(false), [])
 
+  const handleViewChange = useCallback((view) => {
+    setActiveView(view)
+    // Advance demo step when correct nav item is clicked
+    if (demoStep === 2 && view === 'activity') setDemoStep(3)
+    else if (demoStep === 3 && view === 'chat') setDemoStep(4)
+  }, [demoStep])
+
   const selectChat = useCallback((chatId) => {
     setActiveChatId(chatId)
     setReadChatIds(prev => (prev.has(chatId) ? prev : new Set(prev).add(chatId)))
-  }, [])
+    // Advance demo step when correct chat is clicked
+    if (demoStep === 0 && chatId === 35) setDemoStep(1)
+    else if (demoStep === 1 && chatId === 34) setDemoStep(2)
+    else if (demoStep === 4 && chatId === 35) setDemoStep(null) // Demo complete
+  }, [demoStep])
 
   const navigateToChat = useCallback((chatId, { showSessions, sessionId } = {}) => {
     selectChat(chatId)
@@ -89,8 +102,9 @@ export default function App() {
       <div className="app-body">
         <NavRail
           activeView={activeView}
-          onSelectView={setActiveView}
+          onSelectView={handleViewChange}
           activityUnreadCount={activityUnreadCount}
+          demoStep={demoStep}
         />
         {activeView === 'activity' ? (
           <ActivityList
@@ -103,6 +117,7 @@ export default function App() {
             activeChatId={activeChatId}
             onSelectChat={selectChat}
             readChatIds={readChatIds}
+            demoStep={demoStep}
           />
         )}
         <ChatView
@@ -116,6 +131,7 @@ export default function App() {
           navIntent={navIntent}
           clearNavIntent={clearNavIntent}
           addActivityEvent={addActivityEvent}
+          demoStep={demoStep}
         />
       </div>
       {showFre && (
