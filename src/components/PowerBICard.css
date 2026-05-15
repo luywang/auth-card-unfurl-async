@@ -41,6 +41,11 @@
   font-size: 12px;
   color: #616161;
   margin-top: 2px;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* Power BI Rich Card - full unfurl after auth */
@@ -79,14 +84,14 @@
 
 /* Chart visualization */
 .powerbi-card-viz {
-  padding: 12px;
+  padding: 10px 12px;
   background: #FAFAFA;
 }
 
 .powerbi-card-chart {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .powerbi-chart-bar {
@@ -97,15 +102,15 @@
 
 .powerbi-chart-label {
   flex-shrink: 0;
-  width: 60px;
-  font-size: 12px;
+  width: 50px;
+  font-size: 11px;
   color: #424242;
   text-align: right;
 }
 
 .powerbi-chart-track {
   flex: 1;
-  height: 20px;
+  height: 14px;
   background: #E8E8E8;
   border-radius: 2px;
   overflow: hidden;
@@ -119,8 +124,8 @@
 
 .powerbi-chart-value {
   flex-shrink: 0;
-  width: 50px;
-  font-size: 12px;
+  width: 85px;
+  font-size: 11px;
   font-weight: 600;
   color: #242424;
 }

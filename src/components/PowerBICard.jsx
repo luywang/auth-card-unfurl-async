@@ -13,15 +13,14 @@ export function PowerBIThumbnail({ report }) {
   return (
     <div className="powerbi-thumbnail">
       <div className="powerbi-thumbnail-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill={PBI_YELLOW}>
-          <rect x="3" y="9" width="4" height="12" rx="0.5"/>
-          <rect x="10" y="5" width="4" height="16" rx="0.5"/>
-          <rect x="17" y="2" width="4" height="19" rx="0.5"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A8886" strokeWidth="2">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
       <div className="powerbi-thumbnail-text">
-        <div className="powerbi-thumbnail-title">{report.title}</div>
-        <div className="powerbi-thumbnail-subtitle">Power BI Report</div>
+        <div className="powerbi-thumbnail-title">Power BI</div>
+        <div className="powerbi-thumbnail-subtitle">Sign in to Microsoft Power BI for intuitive data visualization, detailed analytics and interactive...</div>
       </div>
     </div>
   )
