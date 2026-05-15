@@ -52,7 +52,8 @@ function SectionHeader({ label, collapsed, onToggle }) {
 
 export default function ChatList({ activeChatId, onSelectChat, readChatIds }) {
   const isUnread = (bold, contactId) => bold && !readChatIds?.has(contactId)
-  const [collapsed, setCollapsed] = useState(() => new Set())
+  const [collapsed, setCollapsed] = useState(() => new Set(['favorites', 'northwind']))
+  const [showAllChats, setShowAllChats] = useState(false)
   const isCollapsed = (key) => collapsed.has(key)
   const toggleSection = (key) => setCollapsed((prev) => {
     const next = new Set(prev)
@@ -165,7 +166,20 @@ export default function ChatList({ activeChatId, onSelectChat, readChatIds }) {
           onToggle={() => toggleSection('chats')}
         />
 
-        {!isCollapsed('chats') && chatList.map(renderItem)}
+        {!isCollapsed('chats') && (
+          <>
+            {(showAllChats ? chatList : chatList.slice(0, 5)).map(renderItem)}
+            {!showAllChats && chatList.length > 5 && (
+              <button
+                type="button"
+                className="see-more-btn"
+                onClick={() => setShowAllChats(true)}
+              >
+                See more
+              </button>
+            )}
+          </>
+        )}
 
         {/* Teams and channels section */}
         <SectionHeader

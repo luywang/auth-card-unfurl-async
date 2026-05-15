@@ -110,7 +110,7 @@ export const projectNorthwind = [
 export const chatList = [
   // Async link unfurl demos
   { contactId: 35, bold: true },
-  { contactId: 34 },
+  { contactId: 34, bold: true },
   // Jira demo flow disabled — restore `draft: '/Jira Are there any blockers assigned to me?'` to re-enable.
   { contactId: 3 },
   { contactId: 4 },

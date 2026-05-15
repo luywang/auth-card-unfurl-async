@@ -377,3 +377,26 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ── See more button ── */
+.see-more-btn {
+  display: flex;
+  align-items: center;
+  padding: 7px 12px;
+  margin: 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6264A7;
+  width: calc(100% - 16px);
+  text-align: left;
+}
+
+.see-more-btn:hover {
+  background: #FCFBFA;
+  color: #5558A3;
+}
