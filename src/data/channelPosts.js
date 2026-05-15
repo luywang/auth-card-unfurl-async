@@ -537,6 +537,7 @@ export const channelPostsByContact = {
       powerBILink: {
         state: 'thumbnail', // 'thumbnail' | 'waiting' | 'auth-pending' | 'rich'
         authType: 'fresh', // 'sso' | 'fresh'
+        url: 'https://powerbi.com/partner-adoption-q2',
         report: {
           title: 'Q2 Partner Adoption Dashboard',
           workspace: 'Northwind / Analytics',

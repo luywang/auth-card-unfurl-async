@@ -252,11 +252,21 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
           {/* Power BI async unfurl - renders different states based on auth flow */}
           {message.powerBILink && (
             <>
-              {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
-                <WaitingBanner userName={currentUser.name} />
+              {message.powerBILink.url && (
+                <a
+                  href={message.powerBILink.url}
+                  className="message-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {message.powerBILink.url}
+                </a>
               )}
               {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
                 <PowerBIThumbnail report={message.powerBILink.report} />
+              )}
+              {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
+                <WaitingBanner userName={currentUser.name} />
               )}
               {message.powerBILink.state === 'rich' && (
                 <PowerBICard report={message.powerBILink.report} />

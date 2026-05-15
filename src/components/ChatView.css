@@ -133,6 +133,20 @@
   font-weight: 700;
 }
 
+.message-link {
+  color: #6264A7;
+  text-decoration: underline;
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.message-link:hover {
+  color: #5B5FC7;
+}
+
 /* Channel post subject — rendered inside the bubble, above the body. */
 .message-subject {
   font-size: 15px;

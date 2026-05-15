@@ -1063,6 +1063,7 @@ export const messagesByContact = {
       time: 'Today 9:03 AM',
       powerBILink: {
         state: 'thumbnail', // 'thumbnail' | 'waiting' | 'auth-pending' | 'rich'
+        url: 'https://powerbi.com/partner-adoption-q2',
         report: {
           title: 'Q2 Partner Adoption Dashboard',
           workspace: 'Northwind / Analytics',
