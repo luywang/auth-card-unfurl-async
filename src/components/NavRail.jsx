@@ -79,7 +79,7 @@ const navItems = [
   },
 ]
 
-export default function NavRail({ activeView = 'chat', onSelectView, activityUnreadCount = 0, demoStep }) {
+export default function NavRail({ activeView = 'chat', onSelectView, activityUnreadCount = 0, demoStep, authOption = 'option1' }) {
   return (
     <nav className="nav-rail">
       <div className="nav-items">
@@ -90,8 +90,11 @@ export default function NavRail({ activeView = 'chat', onSelectView, activityUnr
             ? () => onSelectView?.(item.id)
             : undefined
           const badgeCount = item.id === 'activity' ? activityUnreadCount : item.badge || 0
-          const showArrow = (demoStep === 2 && item.id === 'activity') ||
-                           (demoStep === 3 && item.id === 'chat')
+          // Only show arrows in Option 1
+          const showArrow = authOption === 'option1' && (
+            (demoStep === 2 && item.id === 'activity') ||
+            (demoStep === 3 && item.id === 'chat')
+          )
           return (
             <button
               key={item.id}

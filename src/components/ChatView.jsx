@@ -88,6 +88,7 @@ export default function ChatView({
   addActivityEvent,
   demoStep,
   onDemoStepAdvance,
+  authOption = 'option1',
 }) {
   const activeContact = contacts.find((c) => c.id === activeChatId)
   const baseMessages = messagesByContact[activeChatId] || []
@@ -121,6 +122,7 @@ export default function ChatView({
         powerBILink: {
           ...post.powerBILink,
           state,
+          messageKey: stateKey,
         },
       }
     })
@@ -253,55 +255,59 @@ export default function ChatView({
 
       // Initial state: start the flow
       if (!currentState && msg.powerBILink.state === 'thumbnail') {
-        // Immediately show waiting banner and auth message
+        // Immediately show waiting banner
         setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'auth-pending' }))
 
-        // Create targeted auth message from Power BI bot
-        const authMsg = {
-          id: `auth-${stateKey}`,
-          senderId: 34, // Power BI bot
-          text: '',
-          time: nowTimeStr(),
-          isAuthCard: true,
-          authType: msg.powerBILink.authType || 'sso',
-          targetMessageKey: stateKey,
-          reportName: msg.powerBILink.report?.title || 'Power BI Report',
-        }
-        setTargetedAuthMessages((prev) => [...prev, authMsg])
-
-        // Also add to chat 34 (Power BI bot chat) so it appears as a conversation there
-        // Add auth card message
-        const reminderMsg = {
-          id: `reminder-${stateKey}`,
-          senderId: 34, // Power BI bot
-          text: [
-            { type: 'mention', name: 'Alex Morgan' },
-            ' Please sign in within 24 hours to allow rich preview. The sign-in card will be deleted after 24 hours if not used.'
-          ],
-          time: nowTimeStr(),
-        }
-        setExtraMessages((prev) => ({
-          ...prev,
-          34: [...(prev[34] || []), authMsg, reminderMsg]
-        }))
-
-        // Create activity event for the mention
-        if (addActivityEvent) {
-          addActivityEvent({
-            id: `activity-${stateKey}`,
-            type: 'mention',
-            actorId: 34, // Power BI bot
-            chatId: 34,
-            messageId: `reminder-${stateKey}`,
+        // Option 1: Create private auth messages from Power BI bot
+        if (authOption === 'option1') {
+          // Create targeted auth message from Power BI bot
+          const authMsg = {
+            id: `auth-${stateKey}`,
+            senderId: 34, // Power BI bot
+            text: '',
             time: nowTimeStr(),
-            unread: true,
-          })
+            isAuthCard: true,
+            authType: msg.powerBILink.authType || 'sso',
+            targetMessageKey: stateKey,
+            reportName: msg.powerBILink.report?.title || 'Power BI Report',
+          }
+          setTargetedAuthMessages((prev) => [...prev, authMsg])
+
+          // Also add to chat 34 (Power BI bot chat) so it appears as a conversation there
+          // Add auth card message
+          const reminderMsg = {
+            id: `reminder-${stateKey}`,
+            senderId: 34, // Power BI bot
+            text: [
+              { type: 'mention', name: 'Alex Morgan' },
+              ' Please sign in within 24 hours to allow rich preview. The sign-in card will be deleted after 24 hours if not used.'
+            ],
+            time: nowTimeStr(),
+          }
+          setExtraMessages((prev) => ({
+            ...prev,
+            34: [...(prev[34] || []), authMsg, reminderMsg]
+          }))
+
+          // Create activity event for the mention
+          if (addActivityEvent) {
+            addActivityEvent({
+              id: `activity-${stateKey}`,
+              type: 'mention',
+              actorId: 34, // Power BI bot
+              chatId: 34,
+              messageId: `reminder-${stateKey}`,
+              time: nowTimeStr(),
+              unread: true,
+            })
+          }
         }
+        // Option 2: Banner becomes clickable (no private messages)
       }
     })
   }, [displayBaseMessages, extraMessages, canvasKey, activeChatId, powerBIStates])
 
-  // Handle manual auth sign-in for Fresh Auth flow
+  // Handle manual auth sign-in for Fresh Auth flow (Option 1 - private message)
   const handlePowerBISignIn = (messageKey) => {
     // Set processing state to show loading indicator
     setProcessingAuthKey(messageKey)
@@ -321,6 +327,21 @@ export default function ChatView({
             : m
           )
       }))
+      // Clear processing state
+      setProcessingAuthKey(null)
+      // Advance demo step if on step 5
+      if (onDemoStepAdvance) onDemoStepAdvance()
+    }, 2500)
+  }
+
+  // Handle banner click for Option 2 (public message auth)
+  const handleBannerSignIn = (messageKey) => {
+    // Set processing state
+    setProcessingAuthKey(messageKey)
+
+    // Process for a few seconds before completing
+    setTimeout(() => {
+      setPowerBIStates((prev) => ({ ...prev, [messageKey]: 'rich' }))
       // Clear processing state
       setProcessingAuthKey(null)
       // Advance demo step if on step 5
@@ -716,8 +737,14 @@ export default function ChatView({
   const agentSuggestions = isAgent ? promptSuggestions[activeChatId] : null
   const showPromptSuggestions = !!agentSuggestions && messages.length === 0 && mainTypingAgentId !== activeChatId
 
-  const showChatArrow = (demoStep === 0) || (demoStep === 1) || (demoStep === 4)
-  const showSignInArrow = demoStep === 5
+  // Option 1: Show arrows for all steps. Option 2: Only show first arrow
+  const showChatArrow = authOption === 'option1'
+    ? ((demoStep === 0) || (demoStep === 1) || (demoStep === 4))
+    : (demoStep === 0)
+  const showSignInArrow = demoStep === 5 && authOption === 'option1'
+  // Option 2: Show banner arrow when auth is pending and viewing chat 35
+  const hasPendingAuth = Object.values(powerBIStates).some(state => state === 'auth-pending')
+  const showBannerArrow = authOption === 'option2' && hasPendingAuth && activeChatId === 35
   const arrowTarget = demoStep === 1 ? 'chat-34' : 'chat-35'
 
   return (
@@ -731,6 +758,15 @@ export default function ChatView({
         <div className="chat-demo-arrow chat-demo-arrow-signin">
           <DemoArrow direction="left" size={24} />
           <span className="chat-demo-tooltip">Click for SSO (silent auth).</span>
+        </div>
+      )}
+      {showBannerArrow && (
+        <div className="chat-demo-arrow chat-demo-arrow-banner">
+          <span className="chat-demo-tooltip">
+            Click the yellow banner to sign in Power BI (SSO).<br />
+            The banner is only clickable for Alex.
+          </span>
+          <DemoArrow direction="right" size={24} />
         </div>
       )}
       <div className="chat-view-main">
@@ -772,6 +808,8 @@ export default function ChatView({
                   }}
                   onPowerBISignIn={handlePowerBISignIn}
                   processingAuthKey={processingAuthKey}
+                  authOption={authOption}
+                  onBannerSignIn={handleBannerSignIn}
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -798,10 +836,18 @@ export default function ChatView({
               )}
               {messages.map((msg) => {
                 const isThreaded = isGroup && msg.replies?.length > 0
+                // Add messageKey to powerBILink for non-channel messages
+                const processedMsg = msg.powerBILink ? {
+                  ...msg,
+                  powerBILink: {
+                    ...msg.powerBILink,
+                    messageKey: `${activeChatId}-${msg.id}`,
+                  },
+                } : msg
                 return (
                   <MessageRow
                     key={msg.id}
-                    message={isThreaded ? postToMessage(msg) : msg}
+                    message={isThreaded ? postToMessage(processedMsg) : processedMsg}
                     activeContact={activeContact}
                     onOpenThread={isThreaded ? () => {
                       if (threadRailOpen && channelThreadPostId === msg.id) {
@@ -814,6 +860,8 @@ export default function ChatView({
                     } : openJiraThread}
                     onPowerBISignIn={handlePowerBISignIn}
                     processingAuthKey={processingAuthKey}
+                    authOption={authOption}
+                    onBannerSignIn={handleBannerSignIn}
                   />
                 )
               })}

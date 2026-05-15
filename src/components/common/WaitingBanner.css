@@ -20,3 +20,45 @@
 .waiting-banner-text strong {
   font-weight: 600;
 }
+
+/* Clickable banner (Option 2) */
+.waiting-banner-clickable {
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease, transform 80ms ease;
+  font-family: inherit;
+  text-align: left;
+  width: auto;
+  border-width: 2px;
+  box-shadow: 0 1px 3px rgba(242, 200, 17, 0.2);
+}
+
+.waiting-banner-clickable:hover {
+  background: #FFED9F;
+  border-color: #E0B000;
+  box-shadow: 0 2px 6px rgba(242, 200, 17, 0.35);
+  transform: translateY(-1px);
+}
+
+.waiting-banner-clickable:active {
+  background: #FFE680;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(242, 200, 17, 0.25);
+}
+
+.waiting-banner-clickable .waiting-banner-text strong {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+.waiting-banner-processing {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.waiting-banner-processing:hover {
+  background: #FFF4CE;
+  border-color: #F2C811;
+  transform: none;
+  box-shadow: 0 1px 3px rgba(242, 200, 17, 0.2);
+}

@@ -111,6 +111,7 @@ export default function App() {
           onSelectView={handleViewChange}
           activityUnreadCount={activityUnreadCount}
           demoStep={demoStep}
+          authOption={authOption}
         />
         {activeView === 'activity' ? (
           <ActivityList
@@ -124,6 +125,7 @@ export default function App() {
             onSelectChat={selectChat}
             readChatIds={readChatIds}
             demoStep={demoStep}
+            authOption={authOption}
           />
         )}
         <ChatView
@@ -139,6 +141,7 @@ export default function App() {
           addActivityEvent={addActivityEvent}
           demoStep={demoStep}
           onDemoStepAdvance={advanceDemoStep}
+          authOption={authOption}
         />
       </div>
       {showFre && (
@@ -158,7 +161,7 @@ export default function App() {
               onChange={(e) => setAuthOption(e.target.value)}
             >
               <option value="option1">Option 1 - Private message auth</option>
-              <option value="option2">Option 2 - Public message auth (coming soon)</option>
+              <option value="option2">Option 2 - Public message auth</option>
             </select>
           </div>
 
@@ -193,8 +196,8 @@ export default function App() {
             auth card from Power BI, and the seamless upgrade to the rich preview.
           </p>
           <p className="fre-option-note">
-            <strong>Note:</strong> Option 2 (Public message auth) will show the auth prompt in the
-            conversation thread instead of a private message. This option is coming soon.
+            <strong>Note:</strong> Option 2 (Public message auth) shows the auth prompt as a clickable
+            yellow banner in the conversation thread instead of a private message from Power BI bot.
           </p>
 
           <h3 className="fre-section-title">What this Unlocks</h3>

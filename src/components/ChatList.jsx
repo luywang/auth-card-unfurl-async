@@ -50,10 +50,15 @@ function SectionHeader({ label, collapsed, onToggle }) {
   )
 }
 
-export default function ChatList({ activeChatId, onSelectChat, readChatIds, demoStep }) {
+export default function ChatList({ activeChatId, onSelectChat, readChatIds, demoStep, authOption = 'option1' }) {
   const isUnread = (bold, contactId) => bold && !readChatIds?.has(contactId)
   const [collapsed, setCollapsed] = useState(() => new Set(['favorites', 'northwind']))
   const [showAllChats, setShowAllChats] = useState(false)
+
+  // Filter out Power BI bot (chat 34) in Option 2
+  const filteredChatList = authOption === 'option2'
+    ? chatList.filter(chat => chat.contactId !== 34)
+    : chatList
   const isCollapsed = (key) => collapsed.has(key)
   const toggleSection = (key) => setCollapsed((prev) => {
     const next = new Set(prev)
@@ -168,8 +173,8 @@ export default function ChatList({ activeChatId, onSelectChat, readChatIds, demo
 
         {!isCollapsed('chats') && (
           <>
-            {(showAllChats ? chatList : chatList.slice(0, 5)).map(renderItem)}
-            {!showAllChats && chatList.length > 5 && (
+            {(showAllChats ? filteredChatList : filteredChatList.slice(0, 5)).map(renderItem)}
+            {!showAllChats && filteredChatList.length > 5 && (
               <button
                 type="button"
                 className="see-more-btn"

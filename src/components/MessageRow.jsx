@@ -171,7 +171,7 @@ function ThreadReplyBadge({ reply, onClick }) {
   )
 }
 
-export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn, processingAuthKey }) {
+export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn, processingAuthKey, authOption = 'option1', onBannerSignIn }) {
   const isMe = message.senderId === 'me'
   const isMultiParty = activeContact.isGroup || activeContact.isChannel
   const sender = isMe
@@ -267,7 +267,12 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                 <PowerBIThumbnail report={message.powerBILink.report} />
               )}
               {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
-                <WaitingBanner userName={currentUser.name} />
+                <WaitingBanner
+                  userName={currentUser.name}
+                  isClickable={authOption === 'option2' && isMe}
+                  onClick={() => onBannerSignIn?.(message.powerBILink.messageKey)}
+                  isProcessing={processingAuthKey === message.powerBILink.messageKey}
+                />
               )}
               {message.powerBILink.state === 'rich' && (
                 <PowerBICard report={message.powerBILink.report} />

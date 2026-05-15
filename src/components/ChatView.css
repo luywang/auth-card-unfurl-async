@@ -42,6 +42,16 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+.chat-demo-arrow-banner {
+  left: 50%;
+  margin-left: -480px;
+  top: 450px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+}
+
 .chat-view-main {
   flex: 1;
   display: flex;
