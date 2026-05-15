@@ -63,6 +63,10 @@ export default function App() {
     setDynamicSessionMessages(prev => ({ ...prev, [sessionId]: messages }))
   }, [])
 
+  const addActivityEvent = useCallback((event) => {
+    setActivityEvents(prev => [event, ...prev])
+  }, [])
+
   const selectActivity = useCallback((event) => {
     setActiveActivityId(event.id)
     setActivityEvents(prev =>
@@ -111,6 +115,7 @@ export default function App() {
           dynamicSessionMessages={dynamicSessionMessages}
           navIntent={navIntent}
           clearNavIntent={clearNavIntent}
+          addActivityEvent={addActivityEvent}
         />
       </div>
       {showFre && (

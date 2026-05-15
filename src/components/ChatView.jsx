@@ -85,6 +85,7 @@ export default function ChatView({
   dynamicSessionMessages,
   navIntent,
   clearNavIntent,
+  addActivityEvent,
 }) {
   const activeContact = contacts.find((c) => c.id === activeChatId)
   const baseMessages = messagesByContact[activeChatId] || []
@@ -267,10 +268,33 @@ export default function ChatView({
         setTargetedAuthMessages((prev) => [...prev, authMsg])
 
         // Also add to chat 34 (Power BI bot chat) so it appears as a conversation there
+        // Add auth card message
+        const reminderMsg = {
+          id: `reminder-${stateKey}`,
+          senderId: 34, // Power BI bot
+          text: [
+            { type: 'mention', name: 'Alex Morgan' },
+            ' Please sign in within 24 hours to allow rich preview. The sign-in card will be deleted after 24 hours if not used.'
+          ],
+          time: nowTimeStr(),
+        }
         setExtraMessages((prev) => ({
           ...prev,
-          34: [...(prev[34] || []), authMsg]
+          34: [...(prev[34] || []), authMsg, reminderMsg]
         }))
+
+        // Create activity event for the mention
+        if (addActivityEvent) {
+          addActivityEvent({
+            id: `activity-${stateKey}`,
+            type: 'mention',
+            actorId: 34, // Power BI bot
+            chatId: 34,
+            messageId: `reminder-${stateKey}`,
+            time: nowTimeStr(),
+            unread: true,
+          })
+        }
       }
     })
   }, [displayBaseMessages, extraMessages, canvasKey, activeChatId, powerBIStates])
@@ -285,10 +309,15 @@ export default function ChatView({
       setPowerBIStates((prev) => ({ ...prev, [messageKey]: 'rich' }))
       // Remove targeted message after processing
       setTargetedAuthMessages((prev) => prev.filter((m) => m.targetMessageKey !== messageKey))
-      // Also remove from chat 34 (Power BI bot chat)
+      // Update chat 34 (Power BI bot chat) - remove auth card, edit reminder message
       setExtraMessages((prev) => ({
         ...prev,
-        34: (prev[34] || []).filter((m) => m.targetMessageKey !== messageKey)
+        34: (prev[34] || [])
+          .filter((m) => m.targetMessageKey !== messageKey)
+          .map((m) => m.id === `reminder-${messageKey}`
+            ? { ...m, text: 'Sign-in provided. Thank you!', edited: true }
+            : m
+          )
       }))
       // Clear processing state
       setProcessingAuthKey(null)

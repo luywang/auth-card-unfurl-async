@@ -232,6 +232,7 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
         <div className="message-meta">
           {!isMe && <span className="message-sender-name">{sender.name}</span>}
           <span className="message-timestamp">{message.time}</span>
+          {message.edited && <span className="message-edited">Edited</span>}
         </div>
         <div className={`message-bubble ${message.isPrivate ? 'message-bubble-private' : ''}`}>
           <MessageActions onReact={toggleReaction} />
