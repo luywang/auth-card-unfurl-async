@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { agentLogos } from '../shared/agentLogos'
 import { contacts, currentUser } from '../data/contacts'
-import { Avatar, LinkCard, PrivateDisclaimer, Check, ChainOfThought } from './common'
+import { Avatar, LinkCard, PrivateDisclaimer, Check, ChainOfThought, WaitingBanner } from './common'
+import { PowerBIThumbnail, PowerBICard } from './PowerBICard'
+import AuthCard from './AuthCard'
 import MessageActions from './MessageActions'
 
 // Office-app icon tiles for adaptive cards that represent generated artifacts.
@@ -169,7 +171,7 @@ function ThreadReplyBadge({ reply, onClick }) {
   )
 }
 
-export default function MessageRow({ message, activeContact, onOpenThread }) {
+export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn }) {
   const isMe = message.senderId === 'me'
   const isMultiParty = activeContact.isGroup || activeContact.isChannel
   const sender = isMe
@@ -188,6 +190,31 @@ export default function MessageRow({ message, activeContact, onOpenThread }) {
     })
   }
   const reactions = buildReactionList(message.reactions, myReactions)
+
+  // Auth card for targeted messages
+  if (message.isAuthCard) {
+    return (
+      <div className="message-row">
+        <div className="message-avatar-col">
+          <Avatar contact={sender} size={32} />
+        </div>
+        <div className="message-content-wrap">
+          <div className="message-meta">
+            <span className="message-sender-name">{sender.name}</span>
+            <span className="message-timestamp">{message.time}</span>
+          </div>
+          <div className="message-bubble">
+            <AuthCard
+              service="Power BI"
+              reportName={message.reportName}
+              authType={message.authType}
+              onSignIn={() => onPowerBISignIn?.(message.targetMessageKey)}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -220,6 +247,20 @@ export default function MessageRow({ message, activeContact, onOpenThread }) {
               )
             : message.text}
           {message.link && <LinkCard link={message.link} />}
+          {/* Power BI async unfurl - renders different states based on auth flow */}
+          {message.powerBILink && (
+            <>
+              {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
+                <WaitingBanner userName={currentUser.name} />
+              )}
+              {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
+                <PowerBIThumbnail report={message.powerBILink.report} />
+              )}
+              {message.powerBILink.state === 'rich' && (
+                <PowerBICard report={message.powerBILink.report} />
+              )}
+            </>
+          )}
           {message.cards && (
             <div className="message-cards">
               {message.cards.map((card, i) => card.type === 'file' ? (

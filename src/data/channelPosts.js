@@ -516,4 +516,58 @@ export const channelPostsByContact = {
       ],
     },
   ],
+
+  // Northwind Traders • Power BI Reports (Fresh Auth Demo)
+  36: [
+    {
+      id: 'p36-1',
+      senderId: 'me',
+      time: 'Today 10:15 AM',
+      subject: 'Q2 Partner Adoption Dashboard — latest metrics',
+      text:
+        "Sharing the updated Q2 partner adoption dashboard. Week 4 numbers are in — 189 active partners, up from 142 at the start of the quarter.\n\n" +
+        "Key highlights:\n" +
+        "• SDK v2 preview drove a 40% reduction in onboarding time\n" +
+        "• Average sessions per partner increased from 3.4 to 4.2\n" +
+        "• API call volume up 2.1k over last week\n\n" +
+        "Dashboard shows week-over-week trend + key metrics. Let me know if you want to drill into specific cohorts.",
+      // This will trigger the async unfurl flow with Fresh Auth (requires user click)
+      // Initial state: powerBILink with state: 'thumbnail'
+      // Flow: thumbnail → waiting (with banner) → auth-pending (targeted message + manual sign-in) → rich-card
+      powerBILink: {
+        state: 'thumbnail', // 'thumbnail' | 'waiting' | 'auth-pending' | 'rich'
+        authType: 'fresh', // 'sso' | 'fresh'
+        report: {
+          title: 'Q2 Partner Adoption Dashboard',
+          workspace: 'Northwind / Analytics',
+          lastRefreshed: '2 hours ago',
+          chartData: [
+            { label: 'Week 1', value: 75, displayValue: '142 partners', color: '#118DFF' },
+            { label: 'Week 2', value: 85, displayValue: '161 partners', color: '#118DFF' },
+            { label: 'Week 3', value: 92, displayValue: '174 partners', color: '#118DFF' },
+            { label: 'Week 4', value: 100, displayValue: '189 partners', color: '#00C000' },
+          ],
+          metrics: [
+            { label: 'Active Partners', value: '189', delta: '+23', deltaDirection: 'up' },
+            { label: 'Avg Sessions/Day', value: '4.2', delta: '+0.8', deltaDirection: 'up' },
+            { label: 'API Calls', value: '12.4k', delta: '+2.1k', deltaDirection: 'up' },
+          ],
+        },
+      },
+      replies: [
+        {
+          id: 'p36-1-r1',
+          senderId: 7,
+          text: 'Nice uptick. The SDK v2 improvements are showing up clearly in the cohort behavior.',
+          time: 'Today 10:25 AM',
+        },
+        {
+          id: 'p36-1-r2',
+          senderId: 15,
+          text: 'Can we get a view filtered to the partners who onboarded post-SDK-v2? Want to see if the behavior delta persists.',
+          time: 'Today 10:30 AM',
+        },
+      ],
+    },
+  ],
 }

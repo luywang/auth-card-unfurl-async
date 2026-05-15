@@ -1,0 +1,22 @@
+/* Yellow waiting banner - shown while auth is pending */
+.waiting-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #FFF4CE;
+  border: 1px solid #F2C811;
+  border-radius: 4px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.waiting-banner-text {
+  font-size: 13px;
+  color: #323130;
+  line-height: 1.4;
+}
+
+.waiting-banner-text strong {
+  font-weight: 600;
+}

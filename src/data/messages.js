@@ -1046,4 +1046,50 @@ export const messagesByContact = {
     { id: 15, senderId: 17, text: 'Nice. Also filed JIRA-4596 — requesting the keyboard shortcut tooltip. Minor, post-launch.', time: 'Today 1:40 PM' },
     { id: 16, senderId: 'me', text: 'Appreciate the triage hustle this week. The dogfood channel has been the MVP of launch prep.', time: 'Today 3:30 PM', reactions: [{ emoji: '🙌', count: 5 }, { emoji: '🚀', count: 2 }] },
   ],
+
+  // ── Power BI Link Unfurl - SSO Demo (Group Chat) ──────────────────────
+  // Contact 35: Group with Alex (me) + Sarah + James
+  // Demo flow: Alex sends Power BI link → thumbnail appears → SSO flow auto-completes → rich card
+  35: [
+    { id: 1, senderId: 1, text: 'Morning! Quick sync on the Northwind dashboard metrics?', time: 'Today 9:00 AM' },
+    { id: 2, senderId: 'me', text: 'Sure — let me pull the latest report', time: 'Today 9:02 AM' },
+    // This message will trigger the async unfurl flow with SSO (auto-completes after brief delay)
+    // Initial state: powerBILink with state: 'thumbnail'
+    // Flow: thumbnail → waiting (with banner) → sso-auth-pending (targeted message appears) → rich-card
+    {
+      id: 3,
+      senderId: 'me',
+      text: 'Here\'s the Q2 partner adoption dashboard:',
+      time: 'Today 9:03 AM',
+      powerBILink: {
+        state: 'thumbnail', // 'thumbnail' | 'waiting' | 'auth-pending' | 'rich'
+        report: {
+          title: 'Q2 Partner Adoption Dashboard',
+          workspace: 'Northwind / Analytics',
+          lastRefreshed: '2 hours ago',
+          chartData: [
+            { label: 'Week 1', value: 75, displayValue: '142 partners', color: '#118DFF' },
+            { label: 'Week 2', value: 85, displayValue: '161 partners', color: '#118DFF' },
+            { label: 'Week 3', value: 92, displayValue: '174 partners', color: '#118DFF' },
+            { label: 'Week 4', value: 100, displayValue: '189 partners', color: '#00C000' },
+          ],
+          metrics: [
+            { label: 'Active Partners', value: '189', delta: '+23', deltaDirection: 'up' },
+            { label: 'Avg Sessions/Day', value: '4.2', delta: '+0.8', deltaDirection: 'up' },
+            { label: 'API Calls', value: '12.4k', delta: '+2.1k', deltaDirection: 'up' },
+          ],
+        },
+      },
+    },
+    { id: 4, senderId: 1, text: 'Week 4 uptick looks solid. Is that organic or did we push a cohort through?', time: 'Today 9:05 AM' },
+    { id: 5, senderId: 7, text: 'Organic — most of it came from the SDK v2 preview release. Onboarding time dropped ~40%.', time: 'Today 9:07 AM' },
+    { id: 6, senderId: 'me', text: 'Exactly. The worked examples in the docs made a big difference.', time: 'Today 9:08 AM' },
+  ],
+
+  // ── Power BI Bot - Targeted Messages ───────────────────────────────────
+  // Contact 34: Power BI bot sends private auth cards to current user
+  34: [
+    // This will be dynamically added/removed during the auth flow
+    // Message appears when SSO fails, disappears when auth completes
+  ],
 }

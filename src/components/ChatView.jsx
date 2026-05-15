@@ -99,8 +99,28 @@ export default function ChatView({
   const isAgent = activeContact.isAgent && !activeContact.isGroup
   const isChannel = !!activeContact.isChannel
   const isGroup = !!activeContact.isGroup
-  const channelPosts = isChannel ? channelPostsByContact[activeChatId] || [] : null
+  let channelPosts = isChannel ? channelPostsByContact[activeChatId] || [] : null
   const hasSessions = isAgent && sessions[activeChatId]
+
+  // Power BI async unfurl flow state
+  const [powerBIStates, setPowerBIStates] = useState({}) // Track state per message: { chatId-messageId: 'thumbnail' | 'waiting' | 'auth-pending' | 'rich' }
+  const [targetedAuthMessages, setTargetedAuthMessages] = useState([]) // Targeted messages from Power BI bot
+
+  // Merge Power BI states into channel posts
+  if (channelPosts) {
+    channelPosts = channelPosts.map((post) => {
+      if (!post.powerBILink) return post
+      const stateKey = `${activeChatId}-${post.id}`
+      const state = powerBIStates[stateKey] || post.powerBILink.state
+      return {
+        ...post,
+        powerBILink: {
+          ...post.powerBILink,
+          state,
+        },
+      }
+    })
+  }
 
   const [extraMessages, setExtraMessages] = useState({})
   const [inputValue, setInputValue] = useState(parsedDraft.text)
@@ -174,6 +194,13 @@ export default function ChatView({
     clearNavIntent()
   }
 
+  const sessionMsgs = activeSessionId && (dynamicSessionMessages[activeSessionId] || sessionMessages[activeSessionId])
+  const displayBaseMessages = sessionMsgs || baseMessages
+  // Per-session bucket for in-canvas messages so switching to a new pending
+  // session starts with a blank canvas instead of inheriting the previous
+  // session's messages. Non-session chats fall back to the chat id.
+  const canvasKey = activeSessionId || activeChatId
+
   useEffect(() => {
     if (highlightMessageId) {
       // Activity-navigation: scroll the triggering message into view and
@@ -212,13 +239,84 @@ export default function ChatView({
     updateSessionMessages(jiraGroupSessionId, converted)
   }, [agentChatMessages, jiraGroupSessionId, updateSessionMessages])
 
-  const sessionMsgs = activeSessionId && (dynamicSessionMessages[activeSessionId] || sessionMessages[activeSessionId])
-  const displayBaseMessages = sessionMsgs || baseMessages
-  // Per-session bucket for in-canvas messages so switching to a new pending
-  // session starts with a blank canvas instead of inheriting the previous
-  // session's messages. Non-session chats fall back to the chat id.
-  const canvasKey = activeSessionId || activeChatId
-  const messages = [...displayBaseMessages, ...(extraMessages[canvasKey] || [])]
+  // Power BI async unfurl flow - simulates the auth-then-unfurl progression
+  useEffect(() => {
+    const allMessages = [...displayBaseMessages, ...(extraMessages[canvasKey] || [])]
+    allMessages.forEach((msg) => {
+      if (!msg.powerBILink) return
+      const stateKey = `${activeChatId}-${msg.id}`
+      const currentState = powerBIStates[stateKey]
+
+      // Initial state: start the flow
+      if (!currentState && msg.powerBILink.state === 'thumbnail') {
+        // Immediately show waiting banner and auth message
+        setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'auth-pending' }))
+
+        // Create targeted auth message from Power BI bot
+        const authMsg = {
+          id: `auth-${stateKey}`,
+          senderId: 34, // Power BI bot
+          text: '',
+          time: nowTimeStr(),
+          isAuthCard: true,
+          authType: msg.powerBILink.authType || 'sso',
+          targetMessageKey: stateKey,
+          reportName: msg.powerBILink.report?.title || 'Power BI Report',
+        }
+        setTargetedAuthMessages((prev) => [...prev, authMsg])
+      }
+    })
+  }, [displayBaseMessages, extraMessages, canvasKey, activeChatId, powerBIStates])
+
+  // Handle manual auth sign-in for Fresh Auth flow
+  const handlePowerBISignIn = (messageKey) => {
+    // Process for a few seconds before completing
+    setTimeout(() => {
+      setPowerBIStates((prev) => ({ ...prev, [messageKey]: 'rich' }))
+      // Remove targeted message after processing
+      setTargetedAuthMessages((prev) => prev.filter((m) => m.targetMessageKey !== messageKey))
+    }, 2500)
+  }
+
+  let messages = [...displayBaseMessages, ...(extraMessages[canvasKey] || [])]
+
+  // Merge in Power BI unfurl states
+  messages = messages.map((msg) => {
+    if (!msg.powerBILink) return msg
+    const stateKey = `${activeChatId}-${msg.id}`
+    const state = powerBIStates[stateKey] || msg.powerBILink.state
+    return {
+      ...msg,
+      powerBILink: {
+        ...msg.powerBILink,
+        state,
+      },
+    }
+  })
+
+  // Add targeted auth messages from Power BI bot in chats that have Power BI links
+  // Insert each auth message right after the message it targets
+  const relevantAuthMessages = targetedAuthMessages.filter((authMsg) =>
+    authMsg.targetMessageKey.startsWith(`${activeChatId}-`)
+  )
+  if (relevantAuthMessages.length > 0) {
+    // Build a map of targetMessageKey -> auth message for quick lookup
+    const authMessageMap = new Map(
+      relevantAuthMessages.map((authMsg) => [authMsg.targetMessageKey, authMsg])
+    )
+
+    // Insert auth messages right after their target messages
+    const messagesWithAuth = []
+    for (const msg of messages) {
+      messagesWithAuth.push(msg)
+      const stateKey = `${activeChatId}-${msg.id}`
+      const authMsg = authMessageMap.get(stateKey)
+      if (authMsg) {
+        messagesWithAuth.push(authMsg)
+      }
+    }
+    messages = messagesWithAuth
+  }
   // Messages with `replies` arrays power the threads list/detail view in
   // group chats. Channels use channelPosts for the same purpose.
   const groupThreadablePosts = isGroup ? messages.filter((m) => m.replies?.length > 0) : []
@@ -569,6 +667,7 @@ export default function ChatView({
                       setThreadRailOpen(true)
                     }
                   }}
+                  onPowerBISignIn={handlePowerBISignIn}
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -609,6 +708,7 @@ export default function ChatView({
                         setThreadRailOpen(true)
                       }
                     } : openJiraThread}
+                    onPowerBISignIn={handlePowerBISignIn}
                   />
                 )
               })}

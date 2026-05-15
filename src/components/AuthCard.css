@@ -1,0 +1,70 @@
+/* Auth card - adaptive card for sign-in prompt in targeted messages */
+.auth-card {
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-left: 3px solid #F2C811;
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 400px;
+  margin-top: 8px;
+}
+
+.auth-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 8px;
+}
+
+.auth-card-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #242424;
+}
+
+.auth-card-body {
+  padding: 0 12px 12px;
+}
+
+.auth-card-text {
+  font-size: 13px;
+  color: #424242;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.auth-card-actions {
+  padding: 8px 12px 12px;
+  border-top: 1px solid #F0F0F0;
+}
+
+.auth-card-action-primary {
+  width: 100%;
+  padding: 8px 16px;
+  background: #6264A7;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.auth-card-action-primary:hover {
+  background: #5B5FC7;
+}
+
+.auth-card-action-primary:active {
+  background: #464775;
+}

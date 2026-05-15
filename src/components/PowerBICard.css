@@ -1,0 +1,195 @@
+/* Power BI Thumbnail - fallback card before auth */
+.powerbi-thumbnail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #FAFAFA;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  margin-top: 8px;
+  max-width: 400px;
+}
+
+.powerbi-thumbnail-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border-radius: 4px;
+  border: 1px solid #E0E0E0;
+}
+
+.powerbi-thumbnail-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.powerbi-thumbnail-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #242424;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.powerbi-thumbnail-subtitle {
+  font-size: 12px;
+  color: #616161;
+  margin-top: 2px;
+}
+
+/* Power BI Rich Card - full unfurl after auth */
+.powerbi-card {
+  margin-top: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.powerbi-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 8px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.powerbi-card-logo {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.powerbi-card-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #242424;
+}
+
+/* Chart visualization */
+.powerbi-card-viz {
+  padding: 12px;
+  background: #FAFAFA;
+}
+
+.powerbi-card-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.powerbi-chart-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.powerbi-chart-label {
+  flex-shrink: 0;
+  width: 60px;
+  font-size: 12px;
+  color: #424242;
+  text-align: right;
+}
+
+.powerbi-chart-track {
+  flex: 1;
+  height: 20px;
+  background: #E8E8E8;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.powerbi-chart-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.powerbi-chart-value {
+  flex-shrink: 0;
+  width: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #242424;
+}
+
+/* Metrics row */
+.powerbi-card-metrics {
+  display: flex;
+  gap: 16px;
+  padding: 12px;
+  border-top: 1px solid #F0F0F0;
+}
+
+.powerbi-metric {
+  flex: 1;
+  min-width: 0;
+}
+
+.powerbi-metric-label {
+  font-size: 11px;
+  color: #616161;
+  margin-bottom: 4px;
+}
+
+.powerbi-metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #242424;
+}
+
+.powerbi-metric-delta {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.powerbi-metric-delta-up {
+  color: #00C000;
+}
+
+.powerbi-metric-delta-down {
+  color: #D13438;
+}
+
+/* Footer */
+.powerbi-card-footer {
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #616161;
+  border-top: 1px solid #F0F0F0;
+}
+
+/* Actions */
+.powerbi-card-actions {
+  padding: 8px 12px 12px;
+  border-top: 1px solid #F0F0F0;
+}
+
+.powerbi-card-action-btn {
+  width: 100%;
+  padding: 6px 12px;
+  background: #FFFFFF;
+  border: 1px solid #8A8886;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #242424;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.powerbi-card-action-btn:hover {
+  background: #F3F2F1;
+}

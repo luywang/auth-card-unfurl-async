@@ -49,6 +49,11 @@ export const contacts = [
   { id: 31, name: 'Figma', initials: null, color: '#FFFFFF', status: null, isAgent: true, logo: 'figma', avatar: `${base}avatars/figma.png`, logoInset: true, description: 'Design files and component libraries' },
   { id: 32, name: 'Cowork', initials: null, color: '#FFFFFF', status: null, isAgent: true, logo: 'cowork', avatar: `${base}avatars/cowork.png`, logoInset: true, description: 'Async collaboration and document workflows' },
   { id: 33, name: 'AC Test', initials: 'AC', color: '#5B5FC7', status: null, isGroup: true, memberCount: 5 },
+  { id: 34, name: 'Power BI', initials: null, color: '#F2C811', status: null, isAgent: true, logo: 'powerbi', description: 'Interactive data visualization and business intelligence' },
+  // Group chat for SSO demo - Alex + Sarah + James
+  { id: 35, name: 'Power BI Link Unfurl - SSO Demo', initials: 'PL', color: '#0078D4', status: null, isGroup: true, memberCount: 3 },
+  // Channel for Fresh Auth demo
+  { id: 36, name: 'Power BI Reports', initials: 'NT', color: '#0078D4', status: null, isChannel: true, memberCount: 24 },
 ]
 
 // Teams the user belongs to. Each team has a list of channels (by contact id,
@@ -69,6 +74,7 @@ export const teams = [
       { id: 25, bold: true },
       { id: 26, bold: true },
       { id: 27 },
+      { id: 36, bold: true },
     ],
   },
   {
@@ -102,6 +108,8 @@ export const projectNorthwind = [
 ]
 
 export const chatList = [
+  // Async link unfurl demos
+  { contactId: 35, bold: true },
   // Jira demo flow disabled — restore `draft: '/Jira Are there any blockers assigned to me?'` to re-enable.
   { contactId: 3 },
   { contactId: 4 },

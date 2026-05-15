@@ -11,4 +11,11 @@ export const agentLogos = {
       <path d="M10.5363 3.5409L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456z"/>
     </svg>
   ),
+  powerbi: (size = 12) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="#fff">
+      <rect x="3" y="9" width="4" height="12" rx="0.5"/>
+      <rect x="10" y="5" width="4" height="16" rx="0.5"/>
+      <rect x="17" y="2" width="4" height="19" rx="0.5"/>
+    </svg>
+  ),
 }
