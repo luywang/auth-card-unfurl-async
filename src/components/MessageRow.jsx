@@ -171,7 +171,7 @@ function ThreadReplyBadge({ reply, onClick }) {
   )
 }
 
-export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn }) {
+export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn, processingAuthKey }) {
   const isMe = message.senderId === 'me'
   const isMultiParty = activeContact.isGroup || activeContact.isChannel
   const sender = isMe
@@ -203,12 +203,14 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
             <span className="message-sender-name">{sender.name}</span>
             <span className="message-timestamp">{message.time}</span>
           </div>
-          <div className="message-bubble">
+          <div className="message-bubble message-bubble-private">
+            <PrivateDisclaimer text="Only you can see the content in this message" />
             <AuthCard
               service="Power BI"
               reportName={message.reportName}
               authType={message.authType}
               onSignIn={() => onPowerBISignIn?.(message.targetMessageKey)}
+              isProcessing={processingAuthKey === message.targetMessageKey}
             />
           </div>
         </div>

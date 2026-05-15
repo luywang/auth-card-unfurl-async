@@ -105,6 +105,7 @@ export default function ChatView({
   // Power BI async unfurl flow state
   const [powerBIStates, setPowerBIStates] = useState({}) // Track state per message: { chatId-messageId: 'thumbnail' | 'waiting' | 'auth-pending' | 'rich' }
   const [targetedAuthMessages, setTargetedAuthMessages] = useState([]) // Targeted messages from Power BI bot
+  const [processingAuthKey, setProcessingAuthKey] = useState(null) // Track which auth button is currently processing
 
   // Merge Power BI states into channel posts
   if (channelPosts) {
@@ -270,11 +271,16 @@ export default function ChatView({
 
   // Handle manual auth sign-in for Fresh Auth flow
   const handlePowerBISignIn = (messageKey) => {
+    // Set processing state to show loading indicator
+    setProcessingAuthKey(messageKey)
+
     // Process for a few seconds before completing
     setTimeout(() => {
       setPowerBIStates((prev) => ({ ...prev, [messageKey]: 'rich' }))
       // Remove targeted message after processing
       setTargetedAuthMessages((prev) => prev.filter((m) => m.targetMessageKey !== messageKey))
+      // Clear processing state
+      setProcessingAuthKey(null)
     }, 2500)
   }
 
@@ -668,6 +674,7 @@ export default function ChatView({
                     }
                   }}
                   onPowerBISignIn={handlePowerBISignIn}
+                  processingAuthKey={processingAuthKey}
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -709,6 +716,7 @@ export default function ChatView({
                       }
                     } : openJiraThread}
                     onPowerBISignIn={handlePowerBISignIn}
+                    processingAuthKey={processingAuthKey}
                   />
                 )
               })}

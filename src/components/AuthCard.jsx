@@ -36,7 +36,10 @@ export default function AuthCard({ service, reportName, onSignIn, authType = 'fr
           onClick={onSignIn}
           disabled={isProcessing}
         >
-          {isProcessing ? 'Signing in...' : 'Sign in'}
+          {isProcessing && (
+            <span className="auth-card-spinner" aria-hidden="true"></span>
+          )}
+          Sign in
         </button>
       </div>
     </div>
