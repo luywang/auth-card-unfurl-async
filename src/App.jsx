@@ -181,24 +181,51 @@ export default function App() {
             which feels backwards.
           </p>
 
-          <h3 className="fre-section-title">Solution (Option 1 - Private Message Auth)</h3>
+          <h3 className="fre-section-title">Two Authentication Approaches</h3>
           <p>
-            This prototype introduces asynchronous link unfurling with post-send authentication using
-            <strong> private messages</strong>. After you send a link, Teams attempts authentication
-            in the background. If auth is needed, you'll receive a <strong>private message</strong> from
-            the service (like Power BI) prompting you to sign in. Only you can see this auth prompt.
-            Once you complete authentication, the original message upgrades from a thumbnail to the full
-            rich preview card — for everyone in the conversation.
+            This prototype demonstrates asynchronous link unfurling with post-send authentication.
+            After you send a Power BI link, Teams attempts authentication in the background. If auth
+            is needed, you can sign in after sending — the message then upgrades from a thumbnail
+            to a rich preview for everyone in the conversation.
           </p>
+
+          <h3 className="fre-section-title">Option 1: Private Message Auth</h3>
           <p>
-            The demo includes two scenarios: SSO (silent auth that completes automatically) and Fresh
-            Auth (manual sign-in required). Watch for the yellow "Please wait" banner, the targeted
-            auth card from Power BI, and the seamless upgrade to the rich preview.
+            You receive a <strong>private message</strong> from Power BI bot with a sign-in button.
+            Only you see the auth prompt. After signing in, the original message upgrades to show
+            the rich preview.
           </p>
-          <p className="fre-option-note">
-            <strong>Note:</strong> Option 2 (Public message auth) shows the auth prompt as a clickable
-            yellow banner in the conversation thread instead of a private message from Power BI bot.
+          <p><strong>Pros:</strong></p>
+          <ul className="fre-option-list">
+            <li>Private auth flow keeps sign-in prompts out of conversation thread</li>
+            <li>Dedicated bot chat provides persistent conversation history</li>
+            <li>Reuse the auth card that's already built by the app</li>
+          </ul>
+          <p><strong>Cons:</strong></p>
+          <ul className="fre-option-list">
+            <li>Requires context switching between main chat and bot chat</li>
+            <li>Adds another chat to manage (Power BI bot)</li>
+            <li>Requires bot acquisition (no longer app-less)</li>
+          </ul>
+
+          <h3 className="fre-section-title">Option 2: Public Message Auth</h3>
+          <p>
+            A <strong>clickable yellow banner</strong> appears directly in the conversation thread.
+            Only you can click it. After signing in via the banner, the message upgrades to show
+            the rich preview.
           </p>
+          <p><strong>Pros:</strong></p>
+          <ul className="fre-option-list">
+            <li>No context switching — auth happens in the same conversation</li>
+            <li>More discoverable — banner is immediately visible where you sent the link</li>
+            <li>Simpler UX — no separate bot chat to manage</li>
+          </ul>
+          <p><strong>Cons:</strong></p>
+          <ul className="fre-option-list">
+            <li>Banner visible to all participants (though only sender can click)</li>
+            <li>May feel less private since others see the waiting state</li>
+            <li>No persistent history of auth interactions</li>
+          </ul>
 
           <h3 className="fre-section-title">What this Unlocks</h3>
           <p>

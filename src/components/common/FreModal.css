@@ -261,3 +261,15 @@
   color: #424242;
   border-radius: 4px;
 }
+
+.fre-option-list {
+  margin: 8px 0 16px;
+  padding-left: 24px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.fre-option-list li {
+  margin-bottom: 6px;
+  color: #424242;
+}
