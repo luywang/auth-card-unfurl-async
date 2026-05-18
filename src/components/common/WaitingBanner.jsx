@@ -2,11 +2,16 @@
 // Displayed while waiting for the current user to sign in for rich preview
 // In Option 2, this becomes clickable for the current user to sign in directly
 
-import { Info } from './Icon'
+import { Info, Close } from './Icon'
 import './WaitingBanner.css'
 
-export default function WaitingBanner({ userName, isClickable = false, onClick, isProcessing = false }) {
+export default function WaitingBanner({ userName, isClickable = false, onClick, isProcessing = false, onDismiss }) {
   const Element = isClickable ? 'button' : 'div'
+
+  const handleDismiss = (e) => {
+    e.stopPropagation()
+    onDismiss?.()
+  }
 
   return (
     <Element
@@ -27,6 +32,16 @@ export default function WaitingBanner({ userName, isClickable = false, onClick, 
           </>
         )}
       </span>
+      {onDismiss && (
+        <button
+          className="waiting-banner-dismiss"
+          onClick={handleDismiss}
+          aria-label="Dismiss banner"
+          type="button"
+        >
+          <Close size={16} />
+        </button>
+      )}
     </Element>
   )
 }

@@ -160,8 +160,8 @@ export default function App() {
               value={authOption}
               onChange={(e) => setAuthOption(e.target.value)}
             >
-              <option value="option1">Option 1 - Private message auth</option>
-              <option value="option2">Option 2 - Public message auth</option>
+              <option value="option1">Option 1 - Private message</option>
+              <option value="option2">Option 2 - Public message (preferred)</option>
             </select>
           </div>
 

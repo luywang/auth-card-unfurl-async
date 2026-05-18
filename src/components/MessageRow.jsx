@@ -171,7 +171,7 @@ function ThreadReplyBadge({ reply, onClick }) {
   )
 }
 
-export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn, processingAuthKey, authOption = 'option1', onBannerSignIn }) {
+export default function MessageRow({ message, activeContact, onOpenThread, onPowerBISignIn, processingAuthKey, authOption = 'option1', onBannerSignIn, onBannerDismiss, dismissedBanners }) {
   const isMe = message.senderId === 'me'
   const isMultiParty = activeContact.isGroup || activeContact.isChannel
   const sender = isMe
@@ -266,12 +266,13 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
               {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
                 <PowerBIThumbnail report={message.powerBILink.report} />
               )}
-              {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
+              {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && !dismissedBanners?.has(message.powerBILink.messageKey) && (
                 <WaitingBanner
                   userName={currentUser.name}
                   isClickable={authOption === 'option2' && isMe}
                   onClick={() => onBannerSignIn?.(message.powerBILink.messageKey)}
                   isProcessing={processingAuthKey === message.powerBILink.messageKey}
+                  onDismiss={() => onBannerDismiss?.(message.powerBILink.messageKey)}
                 />
               )}
               {message.powerBILink.state === 'rich' && (

@@ -9,6 +9,7 @@
   border-radius: 4px;
   margin-top: 8px;
   margin-bottom: 4px;
+  position: relative;
 }
 
 .waiting-banner-text {
@@ -61,4 +62,29 @@
   border-color: #F2C811;
   transform: none;
   box-shadow: 0 1px 3px rgba(242, 200, 17, 0.2);
+}
+
+/* Dismiss button */
+.waiting-banner-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #605E5C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  transition: background 120ms ease, color 120ms ease;
+  flex-shrink: 0;
+}
+
+.waiting-banner-dismiss:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #323130;
+}
+
+.waiting-banner-dismiss:active {
+  background: rgba(0, 0, 0, 0.1);
 }

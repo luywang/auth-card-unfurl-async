@@ -110,6 +110,7 @@ export default function ChatView({
   const [powerBIStates, setPowerBIStates] = useState({}) // Track state per message: { chatId-messageId: 'thumbnail' | 'waiting' | 'auth-pending' | 'rich' }
   const [targetedAuthMessages, setTargetedAuthMessages] = useState([]) // Targeted messages from Power BI bot
   const [processingAuthKey, setProcessingAuthKey] = useState(null) // Track which auth button is currently processing
+  const [dismissedBanners, setDismissedBanners] = useState(new Set()) // Track dismissed waiting banners by messageKey
 
   // Merge Power BI states into channel posts
   if (channelPosts) {
@@ -347,6 +348,11 @@ export default function ChatView({
       // Advance demo step if on step 5
       if (onDemoStepAdvance) onDemoStepAdvance()
     }, 2500)
+  }
+
+  // Handle banner dismiss
+  const handleBannerDismiss = (messageKey) => {
+    setDismissedBanners((prev) => new Set([...prev, messageKey]))
   }
 
   // Trigger message sequence after rich card appears (chat 35 demo flow)
@@ -763,8 +769,8 @@ export default function ChatView({
       {showBannerArrow && (
         <div className="chat-demo-arrow chat-demo-arrow-banner">
           <span className="chat-demo-tooltip">
-            Click the yellow banner to sign in Power BI (SSO).<br />
-            The banner is only clickable for Alex.
+            Click the yellow banner to sign in Power BI.<br />
+            The banner is only visible and clickable for Alex.
           </span>
           <DemoArrow direction="right" size={24} />
         </div>
@@ -810,6 +816,8 @@ export default function ChatView({
                   processingAuthKey={processingAuthKey}
                   authOption={authOption}
                   onBannerSignIn={handleBannerSignIn}
+                  onBannerDismiss={handleBannerDismiss}
+                  dismissedBanners={dismissedBanners}
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -862,6 +870,8 @@ export default function ChatView({
                     processingAuthKey={processingAuthKey}
                     authOption={authOption}
                     onBannerSignIn={handleBannerSignIn}
+                    onBannerDismiss={handleBannerDismiss}
+                    dismissedBanners={dismissedBanners}
                   />
                 )
               })}
