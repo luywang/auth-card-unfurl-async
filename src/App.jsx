@@ -189,7 +189,7 @@ export default function App() {
             to a rich preview for everyone in the conversation.
           </p>
 
-          <h3 className="fre-section-title">Option 1: Private Message Auth</h3>
+          <h3 className="fre-section-title">Option 1: Private sign-in card w/ 24hr expiry</h3>
           <p>
             You receive a <strong>private message</strong> from Power BI bot with a sign-in button.
             Only you see the auth prompt. After signing in, the original message upgrades to show
@@ -206,9 +206,10 @@ export default function App() {
             <li>Requires context switching between main chat and bot chat</li>
             <li>Adds another chat to manage (Power BI bot)</li>
             <li>Requires bot acquisition (no longer app-less)</li>
+            <li>Private message expires in 24 hours (limitation of targeted messages)</li>
           </ul>
 
-          <h3 className="fre-section-title">Option 2: Public Message Auth</h3>
+          <h3 className="fre-section-title">Option 2: Public message + sign-in banner</h3>
           <p>
             A <strong>clickable yellow banner</strong> appears directly in the conversation thread.
             Only you can click it. After signing in via the banner, the message upgrades to show
@@ -219,6 +220,7 @@ export default function App() {
             <li>No context switching — auth happens in the same conversation</li>
             <li>More discoverable — banner is immediately visible where you sent the link</li>
             <li>Simpler UX — no separate bot chat to manage</li>
+            <li>Banner expiry can be configured longer than 24 hours</li>
           </ul>
           <p><strong>Cons:</strong></p>
           <ul className="fre-option-list">
