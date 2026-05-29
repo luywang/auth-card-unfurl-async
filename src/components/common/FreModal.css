@@ -110,6 +110,11 @@
   margin-top: 0;
 }
 
+.fre-preferred {
+  color: #13a10e;
+  font-weight: 700;
+}
+
 .fre-modal-body code {
   font-family: 'SF Mono', Menlo, Consolas, monospace;
   font-size: 12.5px;
@@ -250,6 +255,24 @@
   outline: none;
   border-color: #5B5FC7;
   box-shadow: 0 0 0 1px #5B5FC7;
+}
+
+.fre-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #242424;
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+.fre-radio-option input[type="radio"] {
+  accent-color: #5B5FC7;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
 }
 
 .fre-option-note {

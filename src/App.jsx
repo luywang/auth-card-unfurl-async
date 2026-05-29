@@ -28,7 +28,7 @@ export default function App() {
   // real first-run-only behavior is needed.
   const [showFre, setShowFre] = useState(true)
   // Auth flow option: 'option1' (private message) or 'option2' (public message, not yet implemented)
-  const [authOption, setAuthOption] = useState('option1')
+  const [authOption, setAuthOption] = useState('option2')
 
   const dismissFre = useCallback(() => setShowFre(false), [])
 
@@ -151,18 +151,27 @@ export default function App() {
           onDismiss={dismissFre}
         >
           <div className="fre-option-selector">
-            <label htmlFor="auth-option" className="fre-option-label">
-              Select prototype option:
+            <span className="fre-option-label">Select prototype option:</span>
+            <label className="fre-radio-option">
+              <input
+                type="radio"
+                name="auth-option"
+                value="option1"
+                checked={authOption === 'option1'}
+                onChange={(e) => setAuthOption(e.target.value)}
+              />
+              Option 1: Private sign-in card w/ 24hr expiry
             </label>
-            <select
-              id="auth-option"
-              className="fre-option-dropdown"
-              value={authOption}
-              onChange={(e) => setAuthOption(e.target.value)}
-            >
-              <option value="option1">Option 1: Private sign-in card w/ 24hr expiry</option>
-              <option value="option2">Option 2: Public message + sign-in banner (preferred)</option>
-            </select>
+            <label className="fre-radio-option">
+              <input
+                type="radio"
+                name="auth-option"
+                value="option2"
+                checked={authOption === 'option2'}
+                onChange={(e) => setAuthOption(e.target.value)}
+              />
+              Option 2: Public message + sign-in banner <span className="fre-preferred">(preferred)</span>
+            </label>
           </div>
 
           <h3 className="fre-section-title">Today</h3>
@@ -209,7 +218,7 @@ export default function App() {
             <li>Private message expires in 24 hours (limitation of targeted messages)</li>
           </ul>
 
-          <h3 className="fre-section-title">Option 2: Public message + sign-in banner</h3>
+          <h3 className="fre-section-title">Option 2: Public message + sign-in banner <span className="fre-preferred">(preferred)</span></h3>
           <p>
             A <strong>clickable yellow banner</strong> appears directly in the conversation thread.
             Only you can click it. After signing in via the banner, the message upgrades to show
