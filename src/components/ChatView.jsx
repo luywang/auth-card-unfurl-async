@@ -255,56 +255,69 @@ export default function ChatView({
       const stateKey = `${activeChatId}-${msg.id}`
       const currentState = powerBIStates[stateKey]
 
-      // Initial state: start the flow
+      // Initial state: start the delayed flow. Immediately mark as 'loading'
+      // so this branch only fires once — subsequent effect runs see currentState
+      // as 'loading' (truthy) and skip.
       if (!currentState && msg.powerBILink.state === 'thumbnail') {
-        // Immediately show waiting banner
-        setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'auth-pending' }))
+        setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'loading' }))
 
-        // Option 1: Create private auth messages from Power BI bot
-        if (authOption === 'option1') {
-          // Create targeted auth message from Power BI bot
-          const authMsg = {
-            id: `auth-${stateKey}`,
-            senderId: 34, // Power BI bot
-            text: '',
-            time: nowTimeStr(),
-            isAuthCard: true,
-            authType: msg.powerBILink.authType || 'sso',
-            targetMessageKey: stateKey,
-            reportName: msg.powerBILink.report?.title || 'Power BI Report',
-          }
-          setTargetedAuthMessages((prev) => [...prev, authMsg])
+        if (authOption === 'option2') {
+          // 2s delay, then reveal thumbnail + banner together
+          setTimeout(() => {
+            setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'auth-pending' }))
+          }, 2000)
+        } else {
+          // Option 1 — two-phase reveal:
+          // Phase 1 (t+2s): show thumbnail only
+          setTimeout(() => {
+            setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'thumbnail' }))
+            setMainTypingAgentId(34) // Power BI bot starts "typing"
+          }, 2000)
 
-          // Also add to chat 34 (Power BI bot chat) so it appears as a conversation there
-          // Add auth card message
-          const reminderMsg = {
-            id: `reminder-${stateKey}`,
-            senderId: 34, // Power BI bot
-            text: [
-              { type: 'mention', name: 'Alex Morgan' },
-              ' Please sign in within 24 hours to allow rich preview. The sign-in card will be deleted after 24 hours if not used.'
-            ],
-            time: nowTimeStr(),
-          }
-          setExtraMessages((prev) => ({
-            ...prev,
-            34: [...(prev[34] || []), authMsg, reminderMsg]
-          }))
+          // Phase 2 (t+5s): stop typing, send private auth message
+          setTimeout(() => {
+            setMainTypingAgentId((prev) => (prev === 34 ? null : prev))
+            setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'auth-pending' }))
 
-          // Create activity event for the mention
-          if (addActivityEvent) {
-            addActivityEvent({
-              id: `activity-${stateKey}`,
-              type: 'mention',
-              actorId: 34, // Power BI bot
-              chatId: 34,
-              messageId: `reminder-${stateKey}`,
+            const authMsg = {
+              id: `auth-${stateKey}`,
+              senderId: 34,
+              text: '',
               time: nowTimeStr(),
-              unread: true,
-            })
-          }
+              isAuthCard: true,
+              authType: msg.powerBILink.authType || 'sso',
+              targetMessageKey: stateKey,
+              reportName: msg.powerBILink.report?.title || 'Power BI Report',
+            }
+            setTargetedAuthMessages((prev) => [...prev, authMsg])
+
+            const reminderMsg = {
+              id: `reminder-${stateKey}`,
+              senderId: 34,
+              text: [
+                { type: 'mention', name: 'Alex Morgan' },
+                ' Please sign in within 24 hours to allow rich preview. The sign-in card will be deleted after 24 hours if not used.'
+              ],
+              time: nowTimeStr(),
+            }
+            setExtraMessages((prev) => ({
+              ...prev,
+              34: [...(prev[34] || []), authMsg, reminderMsg]
+            }))
+
+            if (addActivityEvent) {
+              addActivityEvent({
+                id: `activity-${stateKey}`,
+                type: 'mention',
+                actorId: 34,
+                chatId: 34,
+                messageId: `reminder-${stateKey}`,
+                time: nowTimeStr(),
+                unread: true,
+              })
+            }
+          }, 5000)
         }
-        // Option 2: Banner becomes clickable (no private messages)
       }
     })
   }, [displayBaseMessages, extraMessages, canvasKey, activeChatId, powerBIStates])
