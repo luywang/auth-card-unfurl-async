@@ -43,6 +43,7 @@ export default function Compose({
   const [inputFocused, setInputFocused] = useState(false)
   const [showComposeAuth, setShowComposeAuth] = useState(false)
   const [showSendArrow, setShowSendArrow] = useState(true)
+  const [countdown, setCountdown] = useState(null)
 
   const handleSend = () => {
     setShowSendArrow(false)
@@ -52,13 +53,26 @@ export default function Compose({
   const urlSegments = parseUrlSegments(value)
   const hasUrl = urlSegments.some(s => s.type === 'url')
 
-  // After 5 seconds with a Power BI URL in the compose box (and FRE dismissed),
-  // unfurl the sign-in card inline. Reset whenever the URL appears or disappears.
+  // Count down 5→1 once a Power BI URL is in the box and FRE is dismissed.
+  // When it hits 0 the sign-in card unfurls. Resets if the URL disappears.
   useEffect(() => {
     setShowComposeAuth(false)
+    setCountdown(null)
     if (!hasUrl || !freDismissed) return
-    const t = setTimeout(() => setShowComposeAuth(true), 5000)
-    return () => clearTimeout(t)
+
+    setCountdown(5)
+    let count = 5
+    const id = setInterval(() => {
+      count -= 1
+      if (count > 0) {
+        setCountdown(count)
+      } else {
+        setCountdown(null)
+        setShowComposeAuth(true)
+        clearInterval(id)
+      }
+    }, 1000)
+    return () => clearInterval(id)
   }, [hasUrl, freDismissed])
   const showUrlOverlay = hasUrl && !inputFocused
 
@@ -142,9 +156,16 @@ export default function Compose({
               </button>
               <div className="compose-divider" />
               <div className="compose-send-wrap">
-                {showSendArrow && (
+                {(showSendArrow || countdown !== null) && (
                   <div className="compose-send-hint" aria-hidden>
-                    <DemoArrow direction="down" size={20} />
+                    {countdown !== null && (
+                      <span className="compose-countdown">
+                        Send now for async unfurl in{' '}
+                        <span className="compose-countdown-num">{countdown}</span>
+                        {countdown === 1 ? ' second' : ' seconds'}
+                      </span>
+                    )}
+                    {showSendArrow && <DemoArrow direction="down" size={20} />}
                   </div>
                 )}
                 <IconButton
