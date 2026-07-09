@@ -166,7 +166,7 @@ export default function App() {
                 checked={authOption === 'option1'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 1: Private sign-in card sent by bot
+              Option 1: Private sign-in card sent by bot <span style={{fontWeight: 700, color: '#5C3317'}}>(ruled out)</span>
             </label>
             <label className="fre-radio-option">
               <input
