@@ -60,8 +60,8 @@ export default function Compose({
     setCountdown(null)
     if (!hasUrl || !freDismissed) return
 
-    setCountdown(5)
-    let count = 5
+    setCountdown(10)
+    let count = 10
     const id = setInterval(() => {
       count -= 1
       if (count > 0) {

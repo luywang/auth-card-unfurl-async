@@ -48,6 +48,28 @@
   -webkit-box-orient: vertical;
 }
 
+/* Shared dismiss button for thumbnail and rich card */
+.powerbi-dismiss-btn {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #616161;
+  padding: 0;
+  margin-left: auto;
+}
+
+.powerbi-dismiss-btn:hover {
+  background: #f0f0f0;
+  color: #242424;
+}
+
 /* Power BI Rich Card - full unfurl after auth */
 .powerbi-card {
   margin-top: 8px;

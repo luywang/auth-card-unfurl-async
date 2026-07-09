@@ -9,7 +9,7 @@ const PBI_BLUE = '#118DFF'
 const PBI_GREEN = '#00C000'
 
 // Thumbnail card - initial fallback state shown before auth completes
-export function PowerBIThumbnail({ report }) {
+export function PowerBIThumbnail({ report, onDismiss }) {
   return (
     <div className="powerbi-thumbnail">
       <div className="powerbi-thumbnail-icon">
@@ -22,12 +22,19 @@ export function PowerBIThumbnail({ report }) {
         <div className="powerbi-thumbnail-title">Power BI</div>
         <div className="powerbi-thumbnail-subtitle">Sign in to Microsoft Power BI for intuitive data visualization, detailed analytics and interactive...</div>
       </div>
+      {onDismiss && (
+        <button className="powerbi-dismiss-btn" onClick={onDismiss} aria-label="Dismiss">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M1 1l8 8M9 1L1 9"/>
+          </svg>
+        </button>
+      )}
     </div>
   )
 }
 
 // Rich card - final unfurl state after auth completes
-export function PowerBICard({ report }) {
+export function PowerBICard({ report, onDismiss }) {
   return (
     <div className="powerbi-card">
       {/* Header with Power BI logo + report title */}
@@ -40,6 +47,13 @@ export function PowerBICard({ report }) {
           </svg>
         </div>
         <div className="powerbi-card-title">{report.title}</div>
+        {onDismiss && (
+          <button className="powerbi-dismiss-btn" onClick={onDismiss} aria-label="Dismiss">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M1 1l8 8M9 1L1 9"/>
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Visualization preview - simplified bar chart */}

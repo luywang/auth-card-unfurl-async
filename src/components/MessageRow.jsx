@@ -201,6 +201,8 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
       : activeContact
 
   const [myReactions, setMyReactions] = useState(() => new Set())
+  const [thumbnailDismissed, setThumbnailDismissed] = useState(false)
+  const [richCardDismissed, setRichCardDismissed] = useState(false)
   const toggleReaction = (emoji) => {
     setMyReactions(prev => {
       const next = new Set(prev)
@@ -285,8 +287,8 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                   {message.powerBILink.url}
                 </a>
               )}
-              {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || (message.powerBILink.state === 'auth-pending' && authOption !== 'option3')) && (
-                <PowerBIThumbnail report={message.powerBILink.report} />
+              {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || (message.powerBILink.state === 'auth-pending' && authOption !== 'option3')) && !thumbnailDismissed && (
+                <PowerBIThumbnail report={message.powerBILink.report} onDismiss={() => setThumbnailDismissed(true)} />
               )}
               {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && !dismissedBanners?.has(message.powerBILink.messageKey) && (
                 authOption === 'option3' ? (
@@ -328,8 +330,8 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                   />
                 )
               )}
-              {message.powerBILink.state === 'rich' && (
-                <PowerBICard report={message.powerBILink.report} />
+              {message.powerBILink.state === 'rich' && !richCardDismissed && (
+                <PowerBICard report={message.powerBILink.report} onDismiss={() => setRichCardDismissed(true)} />
               )}
             </>
           )}
