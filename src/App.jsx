@@ -173,6 +173,16 @@ export default function App() {
               />
               Option 2: Public message w/ private banner <span className="fre-preferred">(preferred)</span>
             </label>
+            <label className="fre-radio-option">
+              <input
+                type="radio"
+                name="auth-option"
+                value="option3"
+                checked={authOption === 'option3'}
+                onChange={(e) => setAuthOption(e.target.value)}
+              />
+              Option 3: Public message w/ private sign-in card
+            </label>
           </div>
 
           <h3 className="fre-section-title">Today</h3>
@@ -191,7 +201,7 @@ export default function App() {
             which feels backwards.
           </p>
 
-          <h3 className="fre-section-title">Two Authentication Approaches</h3>
+          <h3 className="fre-section-title">Three Authentication Approaches</h3>
           <p>
             This prototype demonstrates asynchronous link unfurling with post-send authentication.
             After you send a Power BI link, Teams attempts authentication in the background. If auth
@@ -235,6 +245,26 @@ export default function App() {
           <p><strong>Cons:</strong></p>
           <ul className="fre-option-list">
             <li>Banner visible to all participants (though only sender can click)</li>
+            <li>May feel less private since others see the waiting state</li>
+            <li>No persistent history of auth interactions</li>
+          </ul>
+
+          <h3 className="fre-section-title">Option 3: Public message w/ private sign-in card</h3>
+          <p>
+            An inline <strong>sign-in card</strong> appears directly in the conversation thread attached
+            to your message. Only you can interact with it. After signing in, the original message upgrades
+            to show the rich preview.
+          </p>
+          <p><strong>Pros:</strong></p>
+          <ul className="fre-option-list">
+            <li>No context switching — auth happens in the same conversation</li>
+            <li>More discoverable — sign-in card is immediately visible where you sent the link</li>
+            <li>Familiar card UI reused from the existing auth card pattern</li>
+            <li>Card expiry can be configured longer than 24 hours</li>
+          </ul>
+          <p><strong>Cons:</strong></p>
+          <ul className="fre-option-list">
+            <li>Card visible to all participants (though only sender can interact)</li>
             <li>May feel less private since others see the waiting state</li>
             <li>No persistent history of auth interactions</li>
           </ul>

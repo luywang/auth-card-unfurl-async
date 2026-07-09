@@ -261,7 +261,7 @@ export default function ChatView({
       if (!currentState && msg.powerBILink.state === 'thumbnail') {
         setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'loading' }))
 
-        if (authOption === 'option2') {
+        if (authOption === 'option2' || authOption === 'option3') {
           // 2s delay, then reveal thumbnail + banner together
           setTimeout(() => {
             setPowerBIStates((prev) => ({ ...prev, [stateKey]: 'auth-pending' }))
@@ -780,7 +780,7 @@ export default function ChatView({
   const showSignInArrow = demoStep === 5 && authOption === 'option1'
   // Option 2: Show banner arrow when auth is pending and viewing chat 35
   const hasPendingAuth = Object.values(powerBIStates).some(state => state === 'auth-pending')
-  const showBannerArrow = authOption === 'option2' && hasPendingAuth && activeChatId === 35
+  const showBannerArrow = (authOption === 'option2' || authOption === 'option3') && hasPendingAuth && activeChatId === 35
   const arrowTarget = demoStep === 1 ? 'chat-34' : 'chat-35'
 
   return (

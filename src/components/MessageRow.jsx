@@ -267,7 +267,21 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                 <PowerBIThumbnail report={message.powerBILink.report} />
               )}
               {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && !dismissedBanners?.has(message.powerBILink.messageKey) && (
-                authOption === 'option2' ? (
+                authOption === 'option3' ? (
+                  <div className="waiting-banner-private-wrapper">
+                    <div className="waiting-banner-private-label">
+                      <Lock size={12} />
+                      <span>Only you can see this content.</span>
+                    </div>
+                    <AuthCard
+                      service="Power BI"
+                      reportName={message.powerBILink.report?.title}
+                      authType={message.powerBILink.authType || 'sso'}
+                      onSignIn={() => onBannerSignIn?.(message.powerBILink.messageKey)}
+                      isProcessing={processingAuthKey === message.powerBILink.messageKey}
+                    />
+                  </div>
+                ) : authOption === 'option2' ? (
                   <div className="waiting-banner-private-wrapper">
                     <div className="waiting-banner-private-label">
                       <Lock size={12} />

@@ -56,7 +56,7 @@ export default function ChatList({ activeChatId, onSelectChat, readChatIds, demo
   const [showAllChats, setShowAllChats] = useState(false)
 
   // Filter out Power BI bot (chat 34) in Option 2
-  const filteredChatList = authOption === 'option2'
+  const filteredChatList = (authOption === 'option2' || authOption === 'option3')
     ? chatList.filter(chat => chat.contactId !== 34)
     : chatList
   const isCollapsed = (key) => collapsed.has(key)
