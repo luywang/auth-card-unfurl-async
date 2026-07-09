@@ -170,7 +170,7 @@ export default function App() {
                 checked={authOption === 'option2'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 2: Public message + sign-in banner <span className="fre-preferred">(preferred)</span>
+              Option 2: Public message w/ private banner <span className="fre-preferred">(preferred)</span>
             </label>
           </div>
 
@@ -218,7 +218,7 @@ export default function App() {
             <li>Private message expires in 24 hours (limitation of targeted messages)</li>
           </ul>
 
-          <h3 className="fre-section-title">Option 2: Public message + sign-in banner <span className="fre-preferred">(preferred)</span></h3>
+          <h3 className="fre-section-title">Option 2: Public message w/ private banner <span className="fre-preferred">(preferred)</span></h3>
           <p>
             A <strong>clickable yellow banner</strong> appears directly in the conversation thread.
             Only you can click it. After signing in via the banner, the message upgrades to show
