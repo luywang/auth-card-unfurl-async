@@ -263,7 +263,7 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                   {message.powerBILink.url}
                 </a>
               )}
-              {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && (
+              {(message.powerBILink.state === 'thumbnail' || message.powerBILink.state === 'waiting' || (message.powerBILink.state === 'auth-pending' && authOption !== 'option3')) && (
                 <PowerBIThumbnail report={message.powerBILink.report} />
               )}
               {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && !dismissedBanners?.has(message.powerBILink.messageKey) && (
