@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { favorites, projectNorthwind, chatList, contacts, teams } from '../data'
 import { copilotLogo } from '../shared/assets'
-import { Avatar, ChevronDown, Dots, Search, DemoArrow } from './common'
+import { Avatar, ChevronDown, Dots, Search } from './common'
 import './ChatList.css'
 
 // Small rounded-square team icon used in the Teams & channels section. Mirrors

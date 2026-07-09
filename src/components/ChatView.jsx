@@ -14,7 +14,7 @@ import {
   breakthuAgent,
   powerBILinkTemplate,
 } from '../data'
-import { TypingIndicator, DemoArrow } from './common'
+import { TypingIndicator } from './common'
 import MessageRow from './MessageRow'
 import SessionsRail from './SessionsRail'
 import AgentsRail from './AgentsRail'
@@ -789,26 +789,6 @@ export default function ChatView({
 
   return (
     <div className="chat-view">
-      {showChatArrow && (
-        <div className={`chat-demo-arrow chat-demo-arrow-${arrowTarget}`}>
-          <DemoArrow direction="left" size={24} />
-        </div>
-      )}
-      {showSignInArrow && (
-        <div className="chat-demo-arrow chat-demo-arrow-signin">
-          <DemoArrow direction="left" size={24} />
-          <span className="chat-demo-tooltip">Click for SSO (silent auth).</span>
-        </div>
-      )}
-      {showBannerArrow && (
-        <div className="chat-demo-arrow chat-demo-arrow-banner">
-          <span className="chat-demo-tooltip">
-            Click the yellow banner to sign in Power BI.<br />
-            The ephemeral banner is only visible for Alex in 24hr.
-          </span>
-          <DemoArrow direction="right" size={24} />
-        </div>
-      )}
       <div className="chat-view-main">
         <ChatHeader
           activeContact={activeContact}

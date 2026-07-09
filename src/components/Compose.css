@@ -139,6 +139,10 @@
   justify-content: center;
 }
 
+.send-btn--active {
+  color: #6264A7;
+}
+
 .send-btn:hover {
   background: #f0f0f0;
   color: #6264A7;

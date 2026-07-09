@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { IconButton, Send, DemoArrow } from './common'
+import { IconButton, Send } from './common'
 import { copilotLogo } from '../shared/assets'
 import AuthCard from './AuthCard'
 import './Compose.css'
@@ -136,13 +136,11 @@ export default function Compose({
               </button>
               <div className="compose-divider" />
               <div className="compose-send-wrap">
-                {hasUrl && !showComposeAuth && (
-                  <div className="compose-send-hint" aria-hidden>
-                    <span className="compose-send-tooltip">Alex hit Send too fast, before link was able to unfurl.</span>
-                    <DemoArrow direction="down" size={20} />
-                  </div>
-                )}
-                <IconButton label="Send" className="send-btn" onClick={onSend}>
+                <IconButton
+                  label="Send"
+                  className={`send-btn${(value.trim() || mention) ? ' send-btn--active' : ''}`}
+                  onClick={onSend}
+                >
                   <Send />
                 </IconButton>
               </div>
