@@ -90,6 +90,7 @@ export default function ChatView({
   demoStep,
   onDemoStepAdvance,
   authOption = 'option1',
+  freDismissed = false,
 }) {
   const activeContact = contacts.find((c) => c.id === activeChatId)
   const baseMessages = messagesByContact[activeChatId] || []
@@ -924,6 +925,7 @@ export default function ChatView({
             onClearMention={() => setComposeMention(null)}
             onSend={handleSend}
             isChannel={isChannel}
+            freDismissed={freDismissed}
           />
         </div>
       </div>

@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconButton, Send, DemoArrow } from './common'
 import { copilotLogo } from '../shared/assets'
+import AuthCard from './AuthCard'
 import './Compose.css'
 
 // Splits text into alternating plain/URL segments for styled rendering.
@@ -36,11 +37,22 @@ export default function Compose({
   onClearMention,
   onSend,
   isChannel,
+  freDismissed = false,
 }) {
   const [inputFocused, setInputFocused] = useState(false)
+  const [showComposeAuth, setShowComposeAuth] = useState(false)
 
   const urlSegments = parseUrlSegments(value)
   const hasUrl = urlSegments.some(s => s.type === 'url')
+
+  // After 5 seconds with a Power BI URL in the compose box (and FRE dismissed),
+  // unfurl the sign-in card inline. Reset whenever the URL appears or disappears.
+  useEffect(() => {
+    setShowComposeAuth(false)
+    if (!hasUrl || !freDismissed) return
+    const t = setTimeout(() => setShowComposeAuth(true), 5000)
+    return () => clearTimeout(t)
+  }, [hasUrl, freDismissed])
   const showUrlOverlay = hasUrl && !inputFocused
 
   const handleKeyDown = (e) => {
@@ -62,77 +74,89 @@ export default function Compose({
   return (
     <div className="chat-compose">
       <div className="compose-box-wrap">
-        <div className="compose-box">
-          {mention && (
-            <span className="mention compose-mention">/{mention}</span>
-          )}
-          <div className="compose-input-wrap">
-            {showUrlOverlay && (
-              <div
-                className="compose-url-overlay"
-                aria-hidden
-                onClick={() => document.querySelector('.compose-input')?.focus()}
-              >
-                {urlSegments.map((seg, i) =>
-                  seg.type === 'url'
-                    ? <span key={i} className="compose-url-link">{seg.value}</span>
-                    : <span key={i}>{seg.value}</span>
-                )}
-              </div>
+        <div className={`compose-box${showComposeAuth ? ' compose-box--expanded' : ''}`}>
+          <div className="compose-main-row">
+            {mention && (
+              <span className="mention compose-mention">/{mention}</span>
             )}
-            <input
-              type="text"
-              className="compose-input"
-              placeholder={placeholder}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setInputFocused(true)}
-              onBlur={() => setInputFocused(false)}
-              style={showUrlOverlay ? { color: 'transparent', caretColor: 'transparent' } : undefined}
-            />
-          </div>
-          <div className="compose-actions">
-            <button className="compose-btn" aria-label="Format">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 15l3-10 3 10M8 12h4"/>
-                <path d="M15 5l2 2"/>
-              </svg>
-            </button>
-            <button className="compose-btn" aria-label="Emoji">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="10" cy="10" r="8"/>
-                <path d="M6.5 11.5s1.5 2 3.5 2 3.5-2 3.5-2"/>
-                <circle cx="7.5" cy="7.5" r=".75" fill="currentColor" stroke="none"/>
-                <circle cx="12.5" cy="7.5" r=".75" fill="currentColor" stroke="none"/>
-              </svg>
-            </button>
-            <button className="compose-btn" aria-label="Attach">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14.5 10.5l-5 5a3.54 3.54 0 0 1-5-5l7-7a2.36 2.36 0 0 1 3.33 3.33l-7 7a1.18 1.18 0 0 1-1.67-1.67l5-5"/>
-              </svg>
-            </button>
-            <button className="compose-btn" aria-label="Copilot">
-              <img src={copilotLogo} alt="Copilot" className="copilot-logo-img-sm" />
-            </button>
-            <button className="compose-btn" aria-label="More apps">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 3a.75.75 0 0 1 .75.75v5.5h5.5a.75.75 0 0 1 0 1.5h-5.5v5.5a.75.75 0 0 1-1.5 0v-5.5h-5.5a.75.75 0 0 1 0-1.5h5.5v-5.5A.75.75 0 0 1 10 3z"/>
-              </svg>
-            </button>
-            <div className="compose-divider" />
-            <div className="compose-send-wrap">
-              {hasUrl && (
-                <div className="compose-send-hint" aria-hidden>
-                  <span className="compose-send-tooltip">Alex hit Send too fast, before link was able to unfurl.</span>
-                  <DemoArrow direction="down" size={20} />
+            <div className="compose-input-wrap">
+              {showUrlOverlay && (
+                <div
+                  className="compose-url-overlay"
+                  aria-hidden
+                  onClick={() => document.querySelector('.compose-input')?.focus()}
+                >
+                  {urlSegments.map((seg, i) =>
+                    seg.type === 'url'
+                      ? <span key={i} className="compose-url-link">{seg.value}</span>
+                      : <span key={i}>{seg.value}</span>
+                  )}
                 </div>
               )}
-              <IconButton label="Send" className="send-btn" onClick={onSend}>
-                <Send />
-              </IconButton>
+              <input
+                type="text"
+                className="compose-input"
+                placeholder={placeholder}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setInputFocused(true)}
+                onBlur={() => setInputFocused(false)}
+                style={showUrlOverlay ? { color: 'transparent', caretColor: 'transparent' } : undefined}
+              />
+            </div>
+            <div className="compose-actions">
+              <button className="compose-btn" aria-label="Format">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 15l3-10 3 10M8 12h4"/>
+                  <path d="M15 5l2 2"/>
+                </svg>
+              </button>
+              <button className="compose-btn" aria-label="Emoji">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="10" cy="10" r="8"/>
+                  <path d="M6.5 11.5s1.5 2 3.5 2 3.5-2 3.5-2"/>
+                  <circle cx="7.5" cy="7.5" r=".75" fill="currentColor" stroke="none"/>
+                  <circle cx="12.5" cy="7.5" r=".75" fill="currentColor" stroke="none"/>
+                </svg>
+              </button>
+              <button className="compose-btn" aria-label="Attach">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.5 10.5l-5 5a3.54 3.54 0 0 1-5-5l7-7a2.36 2.36 0 0 1 3.33 3.33l-7 7a1.18 1.18 0 0 1-1.67-1.67l5-5"/>
+                </svg>
+              </button>
+              <button className="compose-btn" aria-label="Copilot">
+                <img src={copilotLogo} alt="Copilot" className="copilot-logo-img-sm" />
+              </button>
+              <button className="compose-btn" aria-label="More apps">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10 3a.75.75 0 0 1 .75.75v5.5h5.5a.75.75 0 0 1 0 1.5h-5.5v5.5a.75.75 0 0 1-1.5 0v-5.5h-5.5a.75.75 0 0 1 0-1.5h5.5v-5.5A.75.75 0 0 1 10 3z"/>
+                </svg>
+              </button>
+              <div className="compose-divider" />
+              <div className="compose-send-wrap">
+                {hasUrl && !showComposeAuth && (
+                  <div className="compose-send-hint" aria-hidden>
+                    <span className="compose-send-tooltip">Alex hit Send too fast, before link was able to unfurl.</span>
+                    <DemoArrow direction="down" size={20} />
+                  </div>
+                )}
+                <IconButton label="Send" className="send-btn" onClick={onSend}>
+                  <Send />
+                </IconButton>
+              </div>
             </div>
           </div>
+          {showComposeAuth && (
+            <div className="compose-auth-card-inner">
+              <AuthCard
+                service="Power BI"
+                reportName="Q2 Partner Adoption Dashboard"
+                authType="sso"
+                onSignIn={undefined}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

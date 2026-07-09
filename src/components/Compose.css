@@ -16,7 +16,7 @@
 .compose-box {
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   border: 1px solid #d1d1d1;
   border-radius: 20px;
   background: #fff;
@@ -24,6 +24,19 @@
   gap: 4px;
   flex: 1;
   min-width: 0;
+}
+
+/* When the auth card is inside, add a bit more bottom padding */
+.compose-box--expanded {
+  padding-bottom: 12px;
+}
+
+/* The top row: input + action buttons */
+.compose-main-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
 }
 
 .compose-mention {
@@ -129,6 +142,11 @@
 .send-btn:hover {
   background: #f0f0f0;
   color: #6264A7;
+}
+
+/* Auth card rendered inside the compose box after a delay */
+.compose-auth-card-inner {
+  padding: 8px 8px 4px 0;
 }
 
 /* ── Send button hint arrow ──────────────────────────────────────────── */

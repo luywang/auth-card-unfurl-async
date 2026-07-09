@@ -28,10 +28,14 @@ export default function App() {
   // hides it for the current session. Swap to localStorage gating later if a
   // real first-run-only behavior is needed.
   const [showFre, setShowFre] = useState(true)
+  const [freDismissed, setFreDismissed] = useState(false)
   // Auth flow option: 'option1' (private message) or 'option2' (public message, not yet implemented)
   const [authOption, setAuthOption] = useState('option2')
 
-  const dismissFre = useCallback(() => setShowFre(false), [])
+  const dismissFre = useCallback(() => {
+    setShowFre(false)
+    setFreDismissed(true)
+  }, [])
 
   const handleViewChange = useCallback((view) => {
     setActiveView(view)
@@ -143,6 +147,7 @@ export default function App() {
           demoStep={demoStep}
           onDemoStepAdvance={advanceDemoStep}
           authOption={authOption}
+          freDismissed={freDismissed}
         />
       </div>
       {showFre && (
