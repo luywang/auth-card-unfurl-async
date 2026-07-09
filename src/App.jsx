@@ -166,7 +166,7 @@ export default function App() {
                 checked={authOption === 'option1'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 1: Private sign-in card sent by bot <span style={{fontWeight: 700, color: '#5C3317'}}>(ruled out)</span>
+              Option 1: <s>Private sign-in card sent by bot</s> <span style={{fontWeight: 700, color: '#5C3317'}}>(ruled out)</span>
             </label>
             <label className="fre-radio-option">
               <input
@@ -176,7 +176,7 @@ export default function App() {
                 checked={authOption === 'option2'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 2: Public message w/ private banner <span className="fre-preferred">(preferred)</span>
+              Option 2: Public message w/ private <span style={{fontWeight: 700}}>banner</span> <span className="fre-preferred">(preferred)</span>
             </label>
             <label className="fre-radio-option">
               <input
@@ -186,7 +186,7 @@ export default function App() {
                 checked={authOption === 'option3'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 3: Public message w/ private sign-in card
+              Option 3: Public message w/ private <span style={{fontWeight: 700}}>card</span> <span className="fre-preferred">(new)</span>
             </label>
           </div>
 
