@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { IconButton, Send } from './common'
+import { IconButton, Send, DemoArrow } from './common'
 import { copilotLogo } from '../shared/assets'
 import AuthCard from './AuthCard'
 import './Compose.css'
@@ -42,6 +42,12 @@ export default function Compose({
 }) {
   const [inputFocused, setInputFocused] = useState(false)
   const [showComposeAuth, setShowComposeAuth] = useState(false)
+  const [showSendArrow, setShowSendArrow] = useState(true)
+
+  const handleSend = () => {
+    setShowSendArrow(false)
+    onSend()
+  }
 
   const urlSegments = parseUrlSegments(value)
   const hasUrl = urlSegments.some(s => s.type === 'url')
@@ -64,7 +70,7 @@ export default function Compose({
     }
     if (e.key === 'Enter') {
       e.preventDefault()
-      onSend()
+      handleSend()
     }
   }
 
@@ -136,10 +142,15 @@ export default function Compose({
               </button>
               <div className="compose-divider" />
               <div className="compose-send-wrap">
+                {showSendArrow && (
+                  <div className="compose-send-hint" aria-hidden>
+                    <DemoArrow direction="down" size={20} />
+                  </div>
+                )}
                 <IconButton
                   label="Send"
                   className={`send-btn${(value.trim() || mention) ? ' send-btn--active' : ''}`}
-                  onClick={onSend}
+                  onClick={handleSend}
                 >
                   <Send />
                 </IconButton>
