@@ -186,7 +186,7 @@ export default function App() {
                 checked={authOption === 'option3'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 3: Public message w/ private <span style={{fontWeight: 700}}>card</span> <span className="fre-preferred">(new)</span>
+              Option 3: Public message w/ private <span style={{fontWeight: 700}}>card</span> <span className="fre-preferred" style={{color: '#0078D4'}}>(new)</span>
             </label>
           </div>
 
