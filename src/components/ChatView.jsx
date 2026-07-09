@@ -134,6 +134,7 @@ export default function ChatView({
   const [extraMessages, setExtraMessages] = useState({})
   const [inputValue, setInputValue] = useState(parsedDraft.text)
   const [composeMention, setComposeMention] = useState(parsedDraft.mention)
+  const [composeAuthDismissed, setComposeAuthDismissed] = useState(false)
   const [showSessions, setShowSessions] = useState(hasSessions)
   const [showAgents, setShowAgents] = useState(false)
   const [selectedRailAgent, setSelectedRailAgent] = useState(null)
@@ -695,7 +696,7 @@ export default function ChatView({
     // URL, strip the URL from the display text and attach the full powerBILink
     // data so the unfurl flow kicks off immediately after send.
     const pbiUrlMatch = sentText.match(/(https?:\/\/powerbi\.com\/[^\s]+)/)
-    const isPowerBILink = !!pbiUrlMatch
+    const isPowerBILink = !!pbiUrlMatch && !composeAuthDismissed
     const messageText = isPowerBILink
       ? sentText.replace(pbiUrlMatch[0], '').replace(/:\s*$/, ':').trim()
       : sentText
@@ -714,6 +715,8 @@ export default function ChatView({
           text: sentText,
           time: nowTimeStr(),
         }
+
+    setComposeAuthDismissed(false)
 
     setExtraMessages((prev) => ({
       ...prev,
@@ -926,6 +929,7 @@ export default function ChatView({
             onSend={handleSend}
             isChannel={isChannel}
             freDismissed={freDismissed}
+            onAuthDismiss={() => setComposeAuthDismissed(true)}
           />
         </div>
       </div>

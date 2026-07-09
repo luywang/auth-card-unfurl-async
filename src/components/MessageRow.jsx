@@ -17,6 +17,26 @@ const CARD_ICONS = {
   teams:      { letter: 'T', bg: '#5B5FC7' },
 }
 
+// Renders a plain text string with any http/https URLs turned into clickable
+// hyperlinks. Returns an array of React nodes (safe to place inside a JSX element).
+function renderTextWithLinks(text) {
+  if (!text || typeof text !== 'string') return text
+  const regex = /(https?:\/\/[^\s]+)/g
+  const parts = []
+  let last = 0, match, i = 0
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index))
+    parts.push(
+      <a key={i++} href={match[0]} className="message-link" target="_blank" rel="noopener noreferrer">
+        {match[0]}
+      </a>
+    )
+    last = match.index + match[0].length
+  }
+  if (last < text.length) parts.push(text.slice(last))
+  return parts.length === 1 && typeof parts[0] === 'string' ? text : parts
+}
+
 function CardIcon({ type }) {
   const cfg = CARD_ICONS[type]
   if (!cfg) return null
@@ -210,6 +230,8 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
               reportName={message.reportName}
               authType={message.authType}
               onSignIn={() => onPowerBISignIn?.(message.targetMessageKey)}
+              onDismiss={() => {}}
+              dismissDisabled={true}
               isProcessing={processingAuthKey === message.targetMessageKey}
             />
           </div>
@@ -246,9 +268,9 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
           {message.subject && <div className="message-subject">{message.subject}</div>}
           {Array.isArray(message.text)
             ? message.text.map((part, i) =>
-                typeof part === 'string' ? part : <span key={i} className="mention">{part.name}</span>
+                typeof part === 'string' ? renderTextWithLinks(part) : <span key={i} className="mention">{part.name}</span>
               )
-            : message.text}
+            : renderTextWithLinks(message.text)}
           {message.link && <LinkCard link={message.link} />}
           {/* Power BI async unfurl - renders different states based on auth flow */}
           {message.powerBILink && (
@@ -278,6 +300,7 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                       reportName={message.powerBILink.report?.title}
                       authType={message.powerBILink.authType || 'sso'}
                       onSignIn={() => onBannerSignIn?.(message.powerBILink.messageKey)}
+                      onDismiss={() => onBannerDismiss?.(message.powerBILink.messageKey)}
                       isProcessing={processingAuthKey === message.powerBILink.messageKey}
                     />
                   </div>

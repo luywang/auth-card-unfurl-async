@@ -4,7 +4,7 @@
 
 import './AuthCard.css'
 
-export default function AuthCard({ service, reportName, onSignIn, authType = 'fresh', isProcessing = false }) {
+export default function AuthCard({ service, reportName, onSignIn, onDismiss, dismissDisabled = false, authType = 'fresh', isProcessing = false }) {
   return (
     <div className="auth-card">
       {/* Header */}
@@ -17,6 +17,16 @@ export default function AuthCard({ service, reportName, onSignIn, authType = 'fr
           </svg>
         </div>
         <div className="auth-card-title">{reportName || `${service} Report`}</div>
+        <button
+          className="auth-card-dismiss"
+          onClick={onDismiss}
+          disabled={dismissDisabled}
+          aria-label="Dismiss"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M1 1l10 10M11 1L1 11"/>
+          </svg>
+        </button>
       </div>
 
       {/* Body */}

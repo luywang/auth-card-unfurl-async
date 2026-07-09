@@ -38,6 +38,7 @@ export default function Compose({
   onSend,
   isChannel,
   freDismissed = false,
+  onAuthDismiss,
 }) {
   const [inputFocused, setInputFocused] = useState(false)
   const [showComposeAuth, setShowComposeAuth] = useState(false)
@@ -154,6 +155,7 @@ export default function Compose({
                 reportName="Q2 Partner Adoption Dashboard"
                 authType="sso"
                 onSignIn={undefined}
+                onDismiss={() => { setShowComposeAuth(false); onAuthDismiss?.() }}
               />
             </div>
           )}
