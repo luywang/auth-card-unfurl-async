@@ -32,15 +32,44 @@
   white-space: nowrap;
 }
 
+.compose-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
 .compose-input {
   font-size: 14px;
   color: #242424;
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   border: none;
   outline: none;
   background: transparent;
   font-family: inherit;
+}
+
+/* Styled overlay shown when the compose value contains a URL and the input
+   is not focused. Makes the URL render as a hyperlink while idle. */
+.compose-url-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #242424;
+  font-family: inherit;
+  pointer-events: auto;
+  cursor: text;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.compose-url-link {
+  color: #0078D4;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .compose-input::placeholder {
@@ -100,6 +129,37 @@
 .send-btn:hover {
   background: #f0f0f0;
   color: #6264A7;
+}
+
+/* ── Send button hint arrow ──────────────────────────────────────────── */
+.compose-send-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Arrow + tooltip floated above the Send button, right-aligned to it. */
+.compose-send-hint {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.compose-send-tooltip {
+  background: #1f1f1f;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 5px 8px;
+  border-radius: 4px;
+  max-width: 600px;
+  white-space: nowrap;
+  text-align: center;
 }
 
 /* ── Jira demo flow hint arrows ──

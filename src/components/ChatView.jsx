@@ -12,6 +12,7 @@ import {
   designerAgent,
   pollyAgent,
   breakthuAgent,
+  powerBILinkTemplate,
 } from '../data'
 import { TypingIndicator, DemoArrow } from './common'
 import MessageRow from './MessageRow'
@@ -357,15 +358,15 @@ export default function ChatView({
 
   // Trigger message sequence after rich card appears (chat 35 demo flow)
   useEffect(() => {
-    const stateKey = `${activeChatId}-3`
+    const stateKey = `${activeChatId}-pbi-chat35`
     const isRich = powerBIStates[stateKey] === 'rich'
 
-    if (activeChatId === 35 && isRich && !extraMessages[canvasKey]?.some(m => m.id === 4)) {
+    if (activeChatId === 35 && isRich && !extraMessages[canvasKey]?.some(m => m.id === 'pbi-4')) {
       // Define the message sequence
       const messageSequence = [
-        { id: 4, senderId: 1, text: 'Week 4 uptick looks solid. Is that organic or did we push a cohort through?', time: 'Today 9:05 AM' },
-        { id: 5, senderId: 7, text: 'Organic — most of it came from the SDK v2 preview release. Onboarding time dropped ~40%.', time: 'Today 9:07 AM' },
-        { id: 6, senderId: 'me', text: 'Exactly. The worked examples in the docs made a big difference.', time: 'Today 9:08 AM' },
+        { id: 'pbi-4', senderId: 1, text: 'Week 4 uptick looks solid. Is that organic or did we push a cohort through?', time: 'Today 9:05 AM' },
+        { id: 'pbi-5', senderId: 7, text: 'Organic — most of it came from the SDK v2 preview release. Onboarding time dropped ~40%.', time: 'Today 9:07 AM' },
+        { id: 'pbi-6', senderId: 'me', text: 'Exactly. The worked examples in the docs made a big difference.', time: 'Today 9:08 AM' },
       ]
 
       // Add messages one by one with typing indicators
@@ -676,12 +677,30 @@ export default function ChatView({
       return
     }
 
-    const myMessage = {
-      id: `extra-${Date.now()}`,
-      senderId: 'me',
-      text: sentText,
-      time: nowTimeStr(),
-    }
+    // Power BI link detection — when the compose draft contains the Power BI
+    // URL, strip the URL from the display text and attach the full powerBILink
+    // data so the unfurl flow kicks off immediately after send.
+    const pbiUrlMatch = sentText.match(/(https?:\/\/powerbi\.com\/[^\s]+)/)
+    const isPowerBILink = !!pbiUrlMatch
+    const messageText = isPowerBILink
+      ? sentText.replace(pbiUrlMatch[0], '').replace(/:\s*$/, ':').trim()
+      : sentText
+
+    const myMessage = isPowerBILink
+      ? {
+          id: 'pbi-chat35',
+          senderId: 'me',
+          text: messageText || sentText,
+          time: nowTimeStr(),
+          powerBILink: { ...powerBILinkTemplate, url: pbiUrlMatch[0] },
+        }
+      : {
+          id: `extra-${Date.now()}`,
+          senderId: 'me',
+          text: sentText,
+          time: nowTimeStr(),
+        }
+
     setExtraMessages((prev) => ({
       ...prev,
       [bucket]: [...(prev[bucket] || []), myMessage],
@@ -743,10 +762,8 @@ export default function ChatView({
   const agentSuggestions = isAgent ? promptSuggestions[activeChatId] : null
   const showPromptSuggestions = !!agentSuggestions && messages.length === 0 && mainTypingAgentId !== activeChatId
 
-  // Option 1: Show arrows for all steps. Option 2: Only show first arrow
-  const showChatArrow = authOption === 'option1'
-    ? ((demoStep === 0) || (demoStep === 1) || (demoStep === 4))
-    : (demoStep === 0)
+  // Option 1: Show arrows for relevant steps. Option 2: no chat arrow needed (lands directly in chat 35).
+  const showChatArrow = authOption === 'option1' && ((demoStep === 1) || (demoStep === 4))
   const showSignInArrow = demoStep === 5 && authOption === 'option1'
   // Option 2: Show banner arrow when auth is pending and viewing chat 35
   const hasPendingAuth = Object.values(powerBIStates).some(state => state === 'auth-pending')

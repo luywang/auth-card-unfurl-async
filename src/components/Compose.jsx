@@ -1,11 +1,30 @@
-import { IconButton, Send } from './common'
+import { useState } from 'react'
+import { IconButton, Send, DemoArrow } from './common'
 import { copilotLogo } from '../shared/assets'
 import './Compose.css'
+
+// Splits text into alternating plain/URL segments for styled rendering.
+function parseUrlSegments(text) {
+  const regex = /(https?:\/\/[^\s]+)/g
+  const segments = []
+  let last = 0
+  let match
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > last) segments.push({ type: 'text', value: text.slice(last, match.index) })
+    segments.push({ type: 'url', value: match[0] })
+    last = match.index + match[0].length
+  }
+  if (last < text.length) segments.push({ type: 'text', value: text.slice(last) })
+  return segments
+}
 
 // Main-canvas compose input. Sits below the chat messages. Handles a few
 // specifics on top of a plain input:
 //   • When a `/mention` is present (e.g. "/Jira …"), it's rendered as a
 //     purple pill in front of the input; Backspace on an empty input clears it.
+//   • When the value contains a URL, it's rendered with hyperlink styling
+//     (blue + underline) in an overlay while the input is idle; focus clears
+//     the overlay so the raw text is editable.
 //   • Channels use "Start a new post" placeholder instead of "Type a message".
 //
 // All action buttons except Send are placeholder styling — wire them up
@@ -18,6 +37,12 @@ export default function Compose({
   onSend,
   isChannel,
 }) {
+  const [inputFocused, setInputFocused] = useState(false)
+
+  const urlSegments = parseUrlSegments(value)
+  const hasUrl = urlSegments.some(s => s.type === 'url')
+  const showUrlOverlay = hasUrl && !inputFocused
+
   const handleKeyDown = (e) => {
     if (e.key === 'Backspace' && value === '' && mention) {
       e.preventDefault()
@@ -41,14 +66,32 @@ export default function Compose({
           {mention && (
             <span className="mention compose-mention">/{mention}</span>
           )}
-          <input
-            type="text"
-            className="compose-input"
-            placeholder={placeholder}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+          <div className="compose-input-wrap">
+            {showUrlOverlay && (
+              <div
+                className="compose-url-overlay"
+                aria-hidden
+                onClick={() => document.querySelector('.compose-input')?.focus()}
+              >
+                {urlSegments.map((seg, i) =>
+                  seg.type === 'url'
+                    ? <span key={i} className="compose-url-link">{seg.value}</span>
+                    : <span key={i}>{seg.value}</span>
+                )}
+              </div>
+            )}
+            <input
+              type="text"
+              className="compose-input"
+              placeholder={placeholder}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              style={showUrlOverlay ? { color: 'transparent', caretColor: 'transparent' } : undefined}
+            />
+          </div>
           <div className="compose-actions">
             <button className="compose-btn" aria-label="Format">
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -78,9 +121,17 @@ export default function Compose({
               </svg>
             </button>
             <div className="compose-divider" />
-            <IconButton label="Send" className="send-btn" onClick={onSend}>
-              <Send />
-            </IconButton>
+            <div className="compose-send-wrap">
+              {hasUrl && (
+                <div className="compose-send-hint" aria-hidden>
+                  <span className="compose-send-tooltip">Alex hit Send too fast, before link was able to unfurl.</span>
+                  <DemoArrow direction="down" size={20} />
+                </div>
+              )}
+              <IconButton label="Send" className="send-btn" onClick={onSend}>
+                <Send />
+              </IconButton>
+            </div>
           </div>
         </div>
       </div>

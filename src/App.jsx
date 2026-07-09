@@ -10,15 +10,16 @@ import './App.css'
 
 export default function App() {
   const [activeView, setActiveView] = useState('chat') // 'chat' | 'activity'
-  const [activeChatId, setActiveChatId] = useState(1)
-  const [readChatIds, setReadChatIds] = useState(() => new Set([1]))
+  const [activeChatId, setActiveChatId] = useState(35)
+  const [readChatIds, setReadChatIds] = useState(() => new Set([35]))
   const [sessions, setSessions] = useState(initialSessions)
   const [dynamicSessionMessages, setDynamicSessionMessages] = useState({})
   // Activity feed: persist which events the user has opened so unread decorations clear.
   const [activityEvents, setActivityEvents] = useState(seedActivityEvents)
   const [activeActivityId, setActiveActivityId] = useState(null)
-  // Demo walkthrough: 0 = chat 35, 1 = chat 34, 2 = activity bell, 3 = chats, 4 = chat 35 again, 5 = sign in button
-  const [demoStep, setDemoStep] = useState(0)
+  // Demo walkthrough: 1 = chat 34, 2 = activity bell, 3 = chats, 4 = chat 35 again, 5 = sign in button
+  // Step 0 (click into chat 35) is skipped — chat 35 is the default landing chat.
+  const [demoStep, setDemoStep] = useState(1)
   // When navigating to a chat, optionally tell ChatView to open a specific
   // session (sessions rail), open a specific channel thread, or flash a
   // specific message so the user can see where a notification landed.

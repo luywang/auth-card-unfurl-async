@@ -4,6 +4,30 @@
 // QA (Emma), and Alex as the consultant driving PRD + launch readiness.
 // Secondary threads: Morgan Collective (Alex's consultancy), the Conversational
 // AI working-group advisory engagement, and general practitioner chatter.
+
+// Power BI link template injected when the user sends the pre-filled compose
+// message in chat 35. Kept here so the data lives alongside the chat data.
+export const powerBILinkTemplate = {
+  state: 'thumbnail',
+  url: 'https://powerbi.com/partner-adoption-q2',
+  report: {
+    title: 'Q2 Partner Adoption Dashboard',
+    workspace: 'Northwind / Analytics',
+    lastRefreshed: '2 hours ago',
+    chartData: [
+      { label: 'Week 1', value: 75, displayValue: '142 partners', color: '#118DFF' },
+      { label: 'Week 2', value: 85, displayValue: '161 partners', color: '#118DFF' },
+      { label: 'Week 3', value: 92, displayValue: '174 partners', color: '#118DFF' },
+      { label: 'Week 4', value: 100, displayValue: '189 partners', color: '#00C000' },
+    ],
+    metrics: [
+      { label: 'Active Partners', value: '189', delta: '+23', deltaDirection: 'up' },
+      { label: 'Avg Sessions/Day', value: '4.2', delta: '+0.8', deltaDirection: 'up' },
+      { label: 'API Calls', value: '12.4k', delta: '+2.1k', deltaDirection: 'up' },
+    ],
+  },
+}
+
 export const messagesByContact = {
   // ── Sarah Chen — design lead ──────────────────────────────────────────
   1: [
@@ -1050,39 +1074,13 @@ export const messagesByContact = {
   // ── Power BI Link Unfurl - SSO Demo (Group Chat) ──────────────────────
   // Contact 35: Group with Alex (me) + Sarah + James
   // Demo flow: Alex sends Power BI link → thumbnail appears → SSO flow auto-completes → rich card
+  // The Power BI link message is NOT seeded here — it starts in the compose box
+  // so the user can experience the send → unfurl flow firsthand. See contacts.js
+  // (chatList draft) and ChatView.jsx (handleSend) for how it gets injected.
   35: [
     { id: 1, senderId: 1, text: 'Morning! Quick sync on the Northwind dashboard metrics?', time: 'Today 9:00 AM' },
     { id: 2, senderId: 'me', text: 'Sure — let me pull the latest report', time: 'Today 9:02 AM' },
-    // This message will trigger the async unfurl flow with SSO (auto-completes after brief delay)
-    // Initial state: powerBILink with state: 'thumbnail'
-    // Flow: thumbnail → waiting (with banner) → sso-auth-pending (targeted message appears) → rich-card
-    {
-      id: 3,
-      senderId: 'me',
-      text: 'Here\'s the Q2 partner adoption dashboard:',
-      time: 'Today 9:03 AM',
-      powerBILink: {
-        state: 'thumbnail', // 'thumbnail' | 'waiting' | 'auth-pending' | 'rich'
-        url: 'https://powerbi.com/partner-adoption-q2',
-        report: {
-          title: 'Q2 Partner Adoption Dashboard',
-          workspace: 'Northwind / Analytics',
-          lastRefreshed: '2 hours ago',
-          chartData: [
-            { label: 'Week 1', value: 75, displayValue: '142 partners', color: '#118DFF' },
-            { label: 'Week 2', value: 85, displayValue: '161 partners', color: '#118DFF' },
-            { label: 'Week 3', value: 92, displayValue: '174 partners', color: '#118DFF' },
-            { label: 'Week 4', value: 100, displayValue: '189 partners', color: '#00C000' },
-          ],
-          metrics: [
-            { label: 'Active Partners', value: '189', delta: '+23', deltaDirection: 'up' },
-            { label: 'Avg Sessions/Day', value: '4.2', delta: '+0.8', deltaDirection: 'up' },
-            { label: 'API Calls', value: '12.4k', delta: '+2.1k', deltaDirection: 'up' },
-          ],
-        },
-      },
-    },
-    // Messages 4, 5, 6 are added dynamically after rich card appears (see ChatView.jsx)
+    // Messages 'pbi-4', 'pbi-5', 'pbi-6' are added dynamically after rich card appears (see ChatView.jsx)
   ],
 
   // ── Power BI Bot - Targeted Messages ───────────────────────────────────

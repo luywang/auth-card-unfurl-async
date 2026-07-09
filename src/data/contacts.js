@@ -109,7 +109,7 @@ export const projectNorthwind = [
 
 export const chatList = [
   // Async link unfurl demos
-  { contactId: 35, bold: true },
+  { contactId: 35, bold: true, draft: "Here's the Q2 partner adoption dashboard: https://powerbi.com/partner-adoption-q2" },
   { contactId: 34, bold: true },
   // Jira demo flow disabled — restore `draft: '/Jira Are there any blockers assigned to me?'` to re-enable.
   { contactId: 3 },
