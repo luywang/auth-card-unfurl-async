@@ -160,7 +160,7 @@ export default function App() {
                 checked={authOption === 'option1'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 1: Private sign-in card w/ 24hr expiry
+              Option 1: Private sign-in card sent by bot
             </label>
             <label className="fre-radio-option">
               <input
@@ -198,7 +198,7 @@ export default function App() {
             to a rich preview for everyone in the conversation.
           </p>
 
-          <h3 className="fre-section-title">Option 1: Private sign-in card w/ 24hr expiry</h3>
+          <h3 className="fre-section-title">Option 1: Private sign-in card sent by bot</h3>
           <p>
             You receive a <strong>private message</strong> from Power BI bot with a sign-in button.
             Only you see the auth prompt. After signing in, the original message upgrades to show

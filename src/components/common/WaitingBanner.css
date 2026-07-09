@@ -64,6 +64,33 @@
   box-shadow: 0 1px 3px rgba(242, 200, 17, 0.2);
 }
 
+/* Option 2: grey private wrapper around the clickable banner */
+.waiting-banner-private-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0;
+  background: #F5F5F5;
+  border: 1px solid #D1D1D1;
+  border-radius: 6px;
+  padding: 10px 12px 8px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.waiting-banner-private-wrapper .waiting-banner {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.waiting-banner-private-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: #616161;
+}
+
 /* Dismiss button */
 .waiting-banner-dismiss {
   margin-left: auto;

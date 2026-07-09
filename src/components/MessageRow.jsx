@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { agentLogos } from '../shared/agentLogos'
 import { contacts, currentUser } from '../data/contacts'
-import { Avatar, LinkCard, PrivateDisclaimer, Check, ChainOfThought, WaitingBanner } from './common'
+import { Avatar, LinkCard, PrivateDisclaimer, Check, ChainOfThought, WaitingBanner, Lock } from './common'
 import { PowerBIThumbnail, PowerBICard } from './PowerBICard'
 import AuthCard from './AuthCard'
 import MessageActions from './MessageActions'
@@ -267,13 +267,29 @@ export default function MessageRow({ message, activeContact, onOpenThread, onPow
                 <PowerBIThumbnail report={message.powerBILink.report} />
               )}
               {(message.powerBILink.state === 'waiting' || message.powerBILink.state === 'auth-pending') && !dismissedBanners?.has(message.powerBILink.messageKey) && (
-                <WaitingBanner
-                  userName={currentUser.name}
-                  isClickable={authOption === 'option2' && isMe}
-                  onClick={() => onBannerSignIn?.(message.powerBILink.messageKey)}
-                  isProcessing={processingAuthKey === message.powerBILink.messageKey}
-                  onDismiss={() => onBannerDismiss?.(message.powerBILink.messageKey)}
-                />
+                authOption === 'option2' ? (
+                  <div className="waiting-banner-private-wrapper">
+                    <div className="waiting-banner-private-label">
+                      <Lock size={12} />
+                      <span>Only you can see this content.</span>
+                    </div>
+                    <WaitingBanner
+                      userName={currentUser.name}
+                      isClickable={isMe}
+                      onClick={() => onBannerSignIn?.(message.powerBILink.messageKey)}
+                      isProcessing={processingAuthKey === message.powerBILink.messageKey}
+                      onDismiss={() => onBannerDismiss?.(message.powerBILink.messageKey)}
+                    />
+                  </div>
+                ) : (
+                  <WaitingBanner
+                    userName={currentUser.name}
+                    isClickable={false}
+                    onClick={() => onBannerSignIn?.(message.powerBILink.messageKey)}
+                    isProcessing={processingAuthKey === message.powerBILink.messageKey}
+                    onDismiss={() => onBannerDismiss?.(message.powerBILink.messageKey)}
+                  />
+                )
               )}
               {message.powerBILink.state === 'rich' && (
                 <PowerBICard report={message.powerBILink.report} />

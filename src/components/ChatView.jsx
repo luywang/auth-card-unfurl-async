@@ -770,7 +770,7 @@ export default function ChatView({
         <div className="chat-demo-arrow chat-demo-arrow-banner">
           <span className="chat-demo-tooltip">
             Click the yellow banner to sign in Power BI.<br />
-            The banner is only visible and clickable for Alex.
+            The ephemeral banner is only visible for Alex in 24hr.
           </span>
           <DemoArrow direction="right" size={24} />
         </div>
