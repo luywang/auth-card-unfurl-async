@@ -30,7 +30,7 @@ export default function App() {
   const [showFre, setShowFre] = useState(true)
   const [freDismissed, setFreDismissed] = useState(false)
   // Auth flow option: 'option1' (private message) or 'option2' (public message, not yet implemented)
-  const [authOption, setAuthOption] = useState('option2')
+  const [authOption, setAuthOption] = useState('option3')
 
   const dismissFre = useCallback(() => {
     setShowFre(false)
@@ -176,7 +176,7 @@ export default function App() {
                 checked={authOption === 'option2'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 2: Public message w/ private <span style={{fontWeight: 700}}>banner</span> <span className="fre-preferred">(preferred)</span>
+              Option 2: Public message w/ private <span style={{fontWeight: 700}}>banner</span>
             </label>
             <label className="fre-radio-option">
               <input
@@ -186,7 +186,7 @@ export default function App() {
                 checked={authOption === 'option3'}
                 onChange={(e) => setAuthOption(e.target.value)}
               />
-              Option 3: Public message w/ private <span style={{fontWeight: 700}}>card</span> <span className="fre-preferred" style={{color: '#0078D4'}}>(new)</span>
+              Option 3: Public message w/ private <span style={{fontWeight: 700}}>card</span> <span className="fre-preferred">(preferred)</span>
             </label>
           </div>
 
@@ -206,12 +206,14 @@ export default function App() {
             which feels backwards.
           </p>
 
-          <h3 className="fre-section-title">Three Authentication Approaches</h3>
+          <h3 className="fre-section-title">Three Options for User Auth</h3>
           <p>
-            This prototype demonstrates asynchronous link unfurling with post-send authentication.
-            After you send a Power BI link, Teams attempts authentication in the background. If auth
-            is needed, you can sign in after sending — the message then upgrades from a thumbnail
-            to a rich preview for everyone in the conversation.
+            This prototype demos two unfurling modes: <strong>in-compose unfurl</strong> (the card
+            preview appears while you're typing, before you send) and <strong>post-send unfurl</strong> (async
+            unfurling — auth happens after the message is sent). To test async unfurling, hit Send
+            within the first 10 seconds. After 10s, the auth card will unfurl in the compose box.
+            The three options below each describe a different way to surface the auth prompt when
+            async unfurling is needed.
           </p>
 
           <h3 className="fre-section-title">Option 1: Private sign-in card sent by bot</h3>
@@ -234,44 +236,36 @@ export default function App() {
             <li>Private message expires in 24 hours (limitation of targeted messages)</li>
           </ul>
 
-          <h3 className="fre-section-title">Option 2: Public message w/ private banner <span className="fre-preferred">(preferred)</span></h3>
+          <h3 className="fre-section-title">Option 2: Public message w/ private banner</h3>
           <p>
             A <strong>clickable yellow banner</strong> appears directly in the conversation thread.
             Only you can click it. After signing in via the banner, the message upgrades to show
             the rich preview.
           </p>
-          <p><strong>Pros:</strong></p>
-          <ul className="fre-option-list">
-            <li>No context switching — auth happens in the same conversation</li>
-            <li>More discoverable — banner is immediately visible where you sent the link</li>
-            <li>Simpler UX — no separate bot chat to manage</li>
-            <li>Banner expiry can be configured longer than 24 hours</li>
-          </ul>
           <p><strong>Cons:</strong></p>
           <ul className="fre-option-list">
-            <li>Banner visible to all participants (though only sender can click)</li>
-            <li>May feel less private since others see the waiting state</li>
-            <li>No persistent history of auth interactions</li>
+            <li>Banner is a non-standard Teams UI pattern that doesn't fit naturally in the message canvas</li>
+            <li>Visual weight of the yellow banner feels alarming rather than informational</li>
+            <li>Harder to extend to multi-link scenarios — one banner per link becomes cluttered</li>
           </ul>
 
-          <h3 className="fre-section-title">Option 3: Public message w/ private sign-in card</h3>
+          <h3 className="fre-section-title">Option 3: Public message w/ private sign-in card <span className="fre-preferred">(preferred)</span></h3>
           <p>
             An inline <strong>sign-in card</strong> appears directly in the conversation thread attached
             to your message. Only you can interact with it. After signing in, the original message upgrades
-            to show the rich preview.
+            to show the rich preview for everyone.
           </p>
-          <p><strong>Pros:</strong></p>
+          <p><strong>Why it's preferred:</strong></p>
           <ul className="fre-option-list">
-            <li>No context switching — auth happens in the same conversation</li>
-            <li>More discoverable — sign-in card is immediately visible where you sent the link</li>
-            <li>Familiar card UI reused from the existing auth card pattern</li>
-            <li>Card expiry can be configured longer than 24 hours</li>
+            <li>Uses the standard Adaptive Card pattern — consistent with how apps surface auth elsewhere in Teams</li>
+            <li>No context switching — auth happens inline where the link was shared</li>
+            <li>Scales cleanly to multi-link scenarios — one card per link, each independently actionable</li>
+            <li>Card expiry can be configured beyond 24 hours</li>
           </ul>
           <p><strong>Cons:</strong></p>
           <ul className="fre-option-list">
             <li>Card visible to all participants (though only sender can interact)</li>
             <li>May feel less private since others see the waiting state</li>
-            <li>No persistent history of auth interactions</li>
           </ul>
 
           <h3 className="fre-section-title">What this Unlocks</h3>
