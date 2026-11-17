@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { IconButton, Send, DemoArrow } from './common'
 import { copilotLogo } from '../shared/assets'
+import { powerBILinkTemplate } from '../data'
 import AuthCard from './AuthCard'
+import { PowerBICard } from './PowerBICard'
 import './Compose.css'
 
 // Splits text into alternating plain/URL segments for styled rendering.
@@ -38,29 +40,33 @@ export default function Compose({
   onSend,
   isChannel,
   freDismissed = false,
-  onAuthDismiss,
 }) {
+  const urlSegments = parseUrlSegments(value)
+  const hasUrl = urlSegments.some(s => s.type === 'url')
+  const powerBIUrl = value.match(/https?:\/\/powerbi\.com\/[^\s]+/)?.[0]
+  const previewKey = freDismissed ? powerBIUrl : undefined
   const [inputFocused, setInputFocused] = useState(false)
-  const [showComposeAuth, setShowComposeAuth] = useState(false)
+  const [previewState, setPreviewState] = useState(null)
   const [showSendArrow, setShowSendArrow] = useState(true)
-  const [countdown, setCountdown] = useState(null)
+  const [countdown, setCountdown] = useState(previewKey ? 10 : null)
+  const [previewCursor, setPreviewCursor] = useState(previewKey)
+
+  if (previewCursor !== previewKey) {
+    setPreviewCursor(previewKey)
+    setPreviewState(null)
+    setCountdown(previewKey ? 10 : null)
+  }
 
   const handleSend = () => {
     setShowSendArrow(false)
-    onSend()
+    onSend(previewState)
   }
 
-  const urlSegments = parseUrlSegments(value)
-  const hasUrl = urlSegments.some(s => s.type === 'url')
-
-  // Count down 5→1 once a Power BI URL is in the box and FRE is dismissed.
+  // Count down 10→1 once a Power BI URL is in the box and FRE is dismissed.
   // When it hits 0 the sign-in card unfurls. Resets if the URL disappears.
   useEffect(() => {
-    setShowComposeAuth(false)
-    setCountdown(null)
-    if (!hasUrl || !freDismissed) return
+    if (!previewKey) return
 
-    setCountdown(10)
     let count = 10
     const id = setInterval(() => {
       count -= 1
@@ -68,12 +74,12 @@ export default function Compose({
         setCountdown(count)
       } else {
         setCountdown(null)
-        setShowComposeAuth(true)
+        setPreviewState('auth')
         clearInterval(id)
       }
     }, 1000)
     return () => clearInterval(id)
-  }, [hasUrl, freDismissed])
+  }, [previewKey])
   const showUrlOverlay = hasUrl && !inputFocused
 
   const handleKeyDown = (e) => {
@@ -95,7 +101,7 @@ export default function Compose({
   return (
     <div className="chat-compose">
       <div className="compose-box-wrap">
-        <div className={`compose-box${showComposeAuth ? ' compose-box--expanded' : ''}`}>
+        <div className={`compose-box${previewState === 'auth' || previewState === 'rich' ? ' compose-box--expanded' : ''}`}>
           <div className="compose-main-row">
             {mention && (
               <span className="mention compose-mention">/{mention}</span>
@@ -178,14 +184,22 @@ export default function Compose({
               </div>
             </div>
           </div>
-          {showComposeAuth && (
+          {previewState === 'auth' && (
             <div className="compose-auth-card-inner">
               <AuthCard
                 service="Power BI"
-                reportName="Q2 Partner Adoption Dashboard"
+                reportName={powerBILinkTemplate.report.title}
                 authType="sso"
-                onSignIn={undefined}
-                onDismiss={() => { setShowComposeAuth(false); onAuthDismiss?.() }}
+                onSignIn={() => setPreviewState('rich')}
+                onDismiss={() => setPreviewState('dismissed')}
+              />
+            </div>
+          )}
+          {previewState === 'rich' && (
+            <div className="compose-auth-card-inner">
+              <PowerBICard
+                report={powerBILinkTemplate.report}
+                onDismiss={() => setPreviewState('dismissed')}
               />
             </div>
           )}

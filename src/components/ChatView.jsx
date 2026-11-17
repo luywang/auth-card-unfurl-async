@@ -134,7 +134,6 @@ export default function ChatView({
   const [extraMessages, setExtraMessages] = useState({})
   const [inputValue, setInputValue] = useState(parsedDraft.text)
   const [composeMention, setComposeMention] = useState(parsedDraft.mention)
-  const [composeAuthDismissed, setComposeAuthDismissed] = useState(false)
   const [showSessions, setShowSessions] = useState(hasSessions)
   const [showAgents, setShowAgents] = useState(false)
   const [selectedRailAgent, setSelectedRailAgent] = useState(null)
@@ -675,7 +674,7 @@ export default function ChatView({
     scheduleJiraResponse(0, userMsgId)
   }
 
-  const handleSend = () => {
+  const handleSend = (previewState) => {
     if (!composeMention && !inputValue.trim()) return
 
     const chatId = activeChatId
@@ -694,9 +693,9 @@ export default function ChatView({
 
     // Power BI link detection — when the compose draft contains the Power BI
     // URL, strip the URL from the display text and attach the full powerBILink
-    // data so the unfurl flow kicks off immediately after send.
+    // data, preserving a preview that was already unfurled in compose.
     const pbiUrlMatch = sentText.match(/(https?:\/\/powerbi\.com\/[^\s]+)/)
-    const isPowerBILink = !!pbiUrlMatch && !composeAuthDismissed
+    const isPowerBILink = !!pbiUrlMatch && previewState !== 'dismissed'
     const messageText = isPowerBILink
       ? sentText.replace(pbiUrlMatch[0], '').replace(/:\s*$/, ':').trim()
       : sentText
@@ -707,7 +706,11 @@ export default function ChatView({
           senderId: 'me',
           text: messageText || sentText,
           time: nowTimeStr(),
-          powerBILink: { ...powerBILinkTemplate, url: pbiUrlMatch[0] },
+          powerBILink: {
+            ...powerBILinkTemplate,
+            url: pbiUrlMatch[0],
+            state: previewState === 'rich' ? 'rich' : powerBILinkTemplate.state,
+          },
         }
       : {
           id: `extra-${Date.now()}`,
@@ -716,7 +719,9 @@ export default function ChatView({
           time: nowTimeStr(),
         }
 
-    setComposeAuthDismissed(false)
+    if (isPowerBILink && previewState === 'rich') {
+      setPowerBIStates((prev) => ({ ...prev, [`${chatId}-${myMessage.id}`]: 'rich' }))
+    }
 
     setExtraMessages((prev) => ({
       ...prev,
@@ -902,6 +907,7 @@ export default function ChatView({
             />
           )}
           <Compose
+            key={canvasKey}
             value={inputValue}
             mention={composeMention}
             onChange={setInputValue}
@@ -909,7 +915,6 @@ export default function ChatView({
             onSend={handleSend}
             isChannel={isChannel}
             freDismissed={freDismissed}
-            onAuthDismiss={() => setComposeAuthDismissed(true)}
           />
         </div>
       </div>
